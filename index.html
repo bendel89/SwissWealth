@@ -7,66 +7,88 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0A84FF">
 <title>SwissWealth</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-:root{--bg:#000;--card:#1C1C1E;--card2:#2C2C2E;--text:#fff;--text2:#8E8E93;--blue:#0A84FF;--green:#30D158;--red:#FF453A;--orange:#FF9F0A;--purple:#BF5AF2;--radius:16px;--safe-top:env(safe-area-inset-top);--safe-bottom:env(safe-area-inset-bottom)}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif}
-body{background:var(--bg);color:var(--text);min-height:100vh;padding-top:var(--safe-top);padding-bottom:calc(90px + var(--safe-bottom));overflow-x:hidden}
-.header{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:14px 20px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
-.header h1{font-size:22px;font-weight:700}
-.header-sub{font-size:13px;color:var(--text2);margin-top:2px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:10px 0 calc(12px + var(--safe-bottom));border-top:1px solid rgba(255,255,255,.08);z-index:100}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text2);font-size:10px;background:none;border:none;padding:6px 8px}
-.nav-item.active{color:var(--blue)}
-.nav-item svg{width:24px;height:24px}
-.page{display:none;padding:16px;animation:fade .2s ease}
-.page.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px}
-.card-title{font-size:13px;color:var(--text2);margin-bottom:6px}
-.big-number{font-size:32px;font-weight:700;letter-spacing:-1px}
-.row{display:flex;gap:10px;margin-bottom:12px}
-.row .card{flex:1;margin-bottom:0}
-.btn{background:var(--blue);color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:600;width:100%}
-.btn:active{opacity:.75}
-.btn-secondary{background:var(--card2)}
-.btn-danger{background:var(--red)}
-.list-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
-.list-item:last-child{border-bottom:none}
-.list-item:active{opacity:.65}
-.icon-circle{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.item-info{flex:1;min-width:0}
-.item-title{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item-sub{font-size:12px;color:var(--text2);margin-top:2px}
-.item-amount{font-weight:600;font-size:15px;text-align:right}
-.amount-expense{color:var(--red)}
-.amount-income{color:var(--green)}
-.progress-bar{height:7px;background:var(--card2);border-radius:4px;overflow:hidden;margin:8px 0}
-.progress-fill{height:100%;border-radius:4px;transition:width .3s}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:13px;color:var(--text2);margin-bottom:5px}
-.form-group input,.form-group select{width:100%;background:var(--card2);border:none;border-radius:12px;padding:13px 15px;color:var(--text);font-size:16px;outline:none}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:flex-end;justify-content:center}
-.modal-overlay.show{display:flex}
-.modal{background:var(--card);width:100%;max-width:500px;border-radius:20px 20px 0 0;padding:22px 18px calc(24px + var(--safe-bottom));max-height:92vh;overflow-y:auto;animation:slide .25s ease}
-@keyframes slide{from{transform:translateY(100%)}to{transform:none}}
-.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.modal-header h2{font-size:19px;font-weight:700}
-.close-btn{background:var(--card2);border:none;width:32px;height:32px;border-radius:50%;color:var(--text);font-size:18px}
-.segmented{display:flex;background:var(--card2);border-radius:10px;padding:3px;margin-bottom:14px}
-.segmented button{flex:1;background:none;border:none;color:var(--text2);padding:8px;border-radius:8px;font-size:14px;font-weight:500}
-.segmented button.active{background:var(--card);color:var(--text)}
-.insight{background:rgba(255,214,10,.12);border-radius:12px;padding:13px;margin-bottom:9px;display:flex;gap:11px;font-size:14px}
-.chart-box{position:relative;height:210px;margin:8px 0}
-.fab{position:fixed;right:18px;bottom:calc(100px + var(--safe-bottom));width:56px;height:56px;border-radius:50%;background:var(--blue);color:#fff;border:none;font-size:30px;box-shadow:0 4px 20px rgba(10,132,255,.45);z-index:90;display:flex;align-items:center;justify-content:center}
-.section-title{font-size:17px;font-weight:700;margin:18px 0 10px}
-.search-box{width:100%;background:var(--card2);border:none;border-radius:12px;padding:12px 14px;color:var(--text);font-size:15px;margin-bottom:12px}
-.action-btns{display:flex;gap:10px;margin-top:16px}
-.action-btns .btn{flex:1}
-.sim-result{text-align:center;padding:20px;background:linear-gradient(135deg,rgba(10,132,255,.2),rgba(48,209,88,.2));border-radius:var(--radius);margin-top:14px}
-.tax-tip{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px;line-height:1.4}
-.tax-tip:last-child{border-bottom:none}
-.empty{text-align:center;padding:40px 16px;color:var(--text2)}
+:root {
+  --bg: #000000;
+  --card: #1C1C1E;
+  --card2: #2C2C2E;
+  --card3: #3A3A3C;
+  --text: #FFFFFF;
+  --text2: #8E8E93;
+  --blue: #0A84FF;
+  --green: #30D158;
+  --red: #FF453A;
+  --orange: #FF9F0A;
+  --purple: #BF5AF2;
+  --yellow: #FFD60A;
+  --radius: 18px;
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",sans-serif; }
+body { background:var(--bg); color:var(--text); min-height:100vh; padding-top:var(--safe-top); padding-bottom:calc(95px + var(--safe-bottom)); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+.header { position:sticky; top:0; z-index:100; background:rgba(0,0,0,0.92); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); padding:16px 20px 14px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.header h1 { font-size:24px; font-weight:800; letter-spacing:-0.5px; }
+.header-sub { font-size:13px; color:var(--text2); margin-top:3px; font-weight:500; }
+.nav { position:fixed; bottom:0; left:0; right:0; background:rgba(22,22,24,0.98); backdrop-filter:blur(24px); display:flex; justify-content:space-around; padding:12px 0 calc(14px + var(--safe-bottom)); border-top:1px solid rgba(255,255,255,0.07); z-index:100; }
+.nav-item { display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--text2); font-size:10px; font-weight:500; background:none; border:none; padding:6px 10px; transition:color 0.2s; }
+.nav-item.active { color:var(--blue); }
+.nav-item svg { width:26px; height:26px; }
+.page { display:none; padding:18px 16px; animation:fadeIn 0.25s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+.card { background:var(--card); border-radius:var(--radius); padding:18px; margin-bottom:14px; border:1px solid rgba(255,255,255,0.04); }
+.card-title { font-size:13px; color:var(--text2); margin-bottom:8px; font-weight:600; letter-spacing:0.2px; }
+.big-number { font-size:36px; font-weight:800; letter-spacing:-1.5px; }
+.row { display:flex; gap:12px; margin-bottom:14px; }
+.row .card { flex:1; margin-bottom:0; }
+.btn { background:var(--blue); color:#fff; border:none; border-radius:14px; padding:15px; font-size:16px; font-weight:700; width:100%; transition:opacity 0.15s; }
+.btn:active { opacity:0.75; }
+.btn-secondary { background:var(--card2); }
+.btn-danger { background:var(--red); }
+.list-item { display:flex; align-items:center; gap:14px; padding:15px 0; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; transition:opacity 0.15s; }
+.list-item:last-child { border-bottom:none; }
+.list-item:active { opacity:0.6; }
+.icon-circle { width:44px; height:44px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; font-weight:600; }
+.item-info { flex:1; min-width:0; }
+.item-title { font-weight:650; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.item-sub { font-size:13px; color:var(--text2); margin-top:3px; }
+.item-amount { font-weight:700; font-size:16px; text-align:right; }
+.amount-expense { color:var(--red); }
+.amount-income { color:var(--green); }
+.progress-bar { height:8px; background:var(--card2); border-radius:5px; overflow:hidden; margin:10px 0 6px; }
+.progress-fill { height:100%; border-radius:5px; transition:width 0.4s cubic-bezier(0.4,0,0.2,1); }
+.form-group { margin-bottom:16px; }
+.form-group label { display:block; font-size:13px; color:var(--text2); margin-bottom:7px; font-weight:600; }
+.form-group input, .form-group select, .form-group textarea {
+  width:100%; background:var(--card2); border:none; border-radius:14px; padding:15px 16px; color:var(--text); font-size:16px; outline:none; transition:box-shadow 0.2s;
+}
+.form-group input:focus, .form-group select:focus { box-shadow:0 0 0 2px var(--blue); }
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:300; display:none; align-items:flex-end; justify-content:center; }
+.modal-overlay.show { display:flex; }
+.modal { background:var(--card); width:100%; max-width:520px; border-radius:24px 24px 0 0; padding:24px 20px calc(28px + var(--safe-bottom)); max-height:92vh; overflow-y:auto; animation:slideUp 0.3s cubic-bezier(0.32,0.72,0,1); }
+@keyframes slideUp { from { transform:translateY(100%); } to { transform:none; } }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+.modal-header h2 { font-size:20px; font-weight:800; }
+.close-btn { background:var(--card2); border:none; width:34px; height:34px; border-radius:50%; color:var(--text); font-size:20px; display:flex; align-items:center; justify-content:center; }
+.segmented { display:flex; background:var(--card2); border-radius:12px; padding:4px; margin-bottom:16px; }
+.segmented button { flex:1; background:none; border:none; color:var(--text2); padding:10px; border-radius:10px; font-size:14px; font-weight:600; transition:all 0.2s; }
+.segmented button.active { background:var(--card); color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,0.25); }
+.insight { background:rgba(255,214,10,0.1); border:1px solid rgba(255,214,10,0.15); border-radius:14px; padding:14px 16px; margin-bottom:10px; display:flex; gap:12px; font-size:14px; line-height:1.45; }
+.chart-box { position:relative; height:220px; margin:10px 0 6px; }
+.fab { position:fixed; right:20px; bottom:calc(105px + var(--safe-bottom)); width:60px; height:60px; border-radius:50%; background:var(--blue); color:#fff; border:none; font-size:32px; box-shadow:0 6px 24px rgba(10,132,255,0.5); z-index:90; display:flex; align-items:center; justify-content:center; transition:transform 0.15s; }
+.fab:active { transform:scale(0.92); }
+.section-title { font-size:18px; font-weight:800; margin:22px 0 12px; letter-spacing:-0.3px; }
+.search-box { width:100%; background:var(--card2); border:none; border-radius:14px; padding:14px 16px; color:var(--text); font-size:16px; margin-bottom:14px; }
+.action-btns { display:flex; gap:12px; margin-top:20px; }
+.action-btns .btn { flex:1; }
+.sim-result { text-align:center; padding:24px; background:linear-gradient(145deg,rgba(10,132,255,0.18),rgba(48,209,88,0.15)); border-radius:var(--radius); margin-top:16px; border:1px solid rgba(48,209,88,0.2); }
+.tax-tip { display:flex; gap:12px; padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:14px; line-height:1.45; }
+.tax-tip:last-child { border-bottom:none; }
+.empty { text-align:center; padding:50px 20px; color:var(--text2); }
+.empty-icon { font-size:48px; margin-bottom:12px; opacity:0.6; }
+.badge { display:inline-block; background:var(--card2); padding:4px 10px; border-radius:20px; font-size:12px; color:var(--text2); font-weight:600; }
 </style>
 </head>
 <body>
@@ -84,60 +106,77 @@ body{background:var(--bg);color:var(--text);min-height:100vh;padding-top:var(--s
 <button class="fab" id="fabBtn" onclick="openAddTx()">+</button>
 
 <nav class="nav">
-  <button class="nav-item active" onclick="go('dashboard',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Dashboard</button>
-  <button class="nav-item" onclick="go('transactions',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>Transactions</button>
-  <button class="nav-item" onclick="go('analytics',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>Analytics</button>
-  <button class="nav-item" onclick="go('planning',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>Planning</button>
-  <button class="nav-item" onclick="go('more',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>Plus</button>
+  <button class="nav-item active" onclick="go('dashboard',this)">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    Dashboard
+  </button>
+  <button class="nav-item" onclick="go('transactions',this)">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+    Transactions
+  </button>
+  <button class="nav-item" onclick="go('analytics',this)">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+    Analytics
+  </button>
+  <button class="nav-item" onclick="go('planning',this)">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+    Planning
+  </button>
+  <button class="nav-item" onclick="go('more',this)">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+    Plus
+  </button>
 </nav>
 
 <div class="modal-overlay" id="modal"><div class="modal" id="modalBody"></div></div>
 
 <script>
-const KEY = 'swisswealth_final_v3';
-let data = {accounts:[],transactions:[],budgets:[],goals:[],subscriptions:[]};
+const KEY = 'swisswealth_ultimate_v4';
+let data = { accounts:[], transactions:[], budgets:[], goals:[], subscriptions:[] };
 let period = 'month';
 let chartCat = null, chartTrend = null;
 
 function load() {
   const s = localStorage.getItem(KEY);
-  if (s) data = JSON.parse(s);
-  else {
+  if (s) {
+    data = JSON.parse(s);
+  } else {
     data = {
-      accounts:[
-        {id:1,name:'Compte UBS',type:'Banque',balance:12450,institution:'UBS'},
-        {id:2,name:'PostFinance',type:'Banque',balance:3200,institution:'PostFinance'},
-        {id:3,name:'Binance',type:'Crypto',balance:8700,institution:'Binance'},
-        {id:4,name:'3e pilier A',type:'Pension',balance:45000,institution:'Swiss Life'}
+      accounts: [
+        {id:1, name:'Compte UBS', type:'Banque', balance:12450, institution:'UBS'},
+        {id:2, name:'PostFinance', type:'Banque', balance:3200, institution:'PostFinance'},
+        {id:3, name:'Binance', type:'Crypto', balance:8700, institution:'Binance'},
+        {id:4, name:'3e pilier A', type:'Pension', balance:45000, institution:'Swiss Life'}
       ],
-      transactions:[
-        {id:1,amount:4200,category:'Salaire',merchant:'Tech SA',isExpense:false,date:'2026-09-28'},
-        {id:2,amount:85,category:'Alimentation',merchant:'Migros',isExpense:true,date:'2026-09-30'},
-        {id:3,amount:12.5,category:'Transport',merchant:'CFF',isExpense:true,date:'2026-10-01'},
-        {id:4,amount:49,category:'Abonnements',merchant:'Netflix',isExpense:true,date:'2026-09-15'},
-        {id:5,amount:120,category:'Restaurants',merchant:'Le Jardin',isExpense:true,date:'2026-09-29'},
-        {id:6,amount:890,category:'Logement',merchant:'Loyer',isExpense:true,date:'2026-09-01'},
-        {id:7,amount:250,category:'Shopping',merchant:'Zalando',isExpense:true,date:'2026-09-22'},
-        {id:8,amount:60,category:'Alimentation',merchant:'Coop',isExpense:true,date:'2026-10-01'},
-        {id:9,amount:35,category:'Santé',merchant:'Pharmacie',isExpense:true,date:'2026-09-18'},
-        {id:10,amount:15,category:'Loisirs',merchant:'Cinéma',isExpense:true,date:'2026-09-25'}
+      transactions: [
+        {id:1, amount:4200, category:'Salaire', merchant:'Tech SA', isExpense:false, date:'2026-09-28', note:''},
+        {id:2, amount:85, category:'Alimentation', merchant:'Migros', isExpense:true, date:'2026-09-30', note:''},
+        {id:3, amount:12.5, category:'Transport', merchant:'CFF', isExpense:true, date:'2026-10-01', note:''},
+        {id:4, amount:49, category:'Abonnements', merchant:'Netflix', isExpense:true, date:'2026-09-15', note:''},
+        {id:5, amount:120, category:'Restaurants', merchant:'Le Jardin', isExpense:true, date:'2026-09-29', note:''},
+        {id:6, amount:890, category:'Logement', merchant:'Loyer', isExpense:true, date:'2026-09-01', note:''},
+        {id:7, amount:250, category:'Shopping', merchant:'Zalando', isExpense:true, date:'2026-09-22', note:''},
+        {id:8, amount:60, category:'Alimentation', merchant:'Coop', isExpense:true, date:'2026-10-01', note:''},
+        {id:9, amount:35, category:'Santé', merchant:'Pharmacie', isExpense:true, date:'2026-09-18', note:''},
+        {id:10, amount:15, category:'Loisirs', merchant:'Cinéma', isExpense:true, date:'2026-09-25', note:''}
       ],
-      budgets:[
-        {id:1,category:'Alimentation',limit:600},
-        {id:2,category:'Restaurants',limit:300},
-        {id:3,category:'Loisirs',limit:200}
+      budgets: [
+        {id:1, category:'Alimentation', limit:600},
+        {id:2, category:'Restaurants', limit:300},
+        {id:3, category:'Loisirs', limit:200},
+        {id:4, category:'Transport', limit:150}
       ],
-      goals:[
-        {id:1,name:"Fonds d'urgence",target:20000,current:8500,icon:'🛡️'},
-        {id:2,name:'Vacances Japon 2027',target:6000,current:1200,icon:'✈️'},
-        {id:3,name:'Apport logement',target:80000,current:32000,icon:'🏠'}
+      goals: [
+        {id:1, name:"Fonds d'urgence", target:20000, current:8500, icon:'🛡️'},
+        {id:2, name:'Vacances Japon 2027', target:6000, current:1200, icon:'✈️'},
+        {id:3, name:'Apport logement', target:80000, current:32000, icon:'🏠'}
       ],
-      subscriptions:[
-        {id:1,name:'Netflix',amount:19.9,frequency:'monthly'},
-        {id:2,name:'Spotify',amount:12.9,frequency:'monthly'},
-        {id:3,name:'iCloud+',amount:2.95,frequency:'monthly'},
-        {id:4,name:'Fitness Park',amount:59,frequency:'monthly'},
-        {id:5,name:'CFF AG',amount:3860,frequency:'yearly'}
+      subscriptions: [
+        {id:1, name:'Netflix', amount:19.90, frequency:'monthly'},
+        {id:2, name:'Spotify', amount:12.90, frequency:'monthly'},
+        {id:3, name:'iCloud+', amount:2.95, frequency:'monthly'},
+        {id:4, name:'Fitness Park', amount:59, frequency:'monthly'},
+        {id:5, name:'CFF AG', amount:3860, frequency:'yearly'}
       ]
     };
     save();
@@ -145,483 +184,608 @@ function load() {
   updateBudgets();
 }
 
-function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
-function uid(){ return Date.now() + Math.floor(Math.random()*999); }
-function chf(n){ return new Intl.NumberFormat('fr-CH',{style:'currency',currency:'CHF'}).format(n||0); }
-function dte(d){ return new Date(d).toLocaleDateString('fr-CH',{day:'numeric',month:'short'}); }
+function save() { localStorage.setItem(KEY, JSON.stringify(data)); }
+function uid() { return Date.now() + Math.floor(Math.random() * 999); }
+function chf(n) { return new Intl.NumberFormat('fr-CH', { style:'currency', currency:'CHF' }).format(n || 0); }
+function dte(d) { return new Date(d).toLocaleDateString('fr-CH', { day:'numeric', month:'short', year:'numeric' }); }
 
-function updateBudgets(){
+function updateBudgets() {
   const now = new Date();
-  data.budgets.forEach(b=>{
+  data.budgets.forEach(b => {
     b.spent = data.transactions
-      .filter(t=>t.isExpense && t.category===b.category && new Date(t.date).getMonth()===now.getMonth() && new Date(t.date).getFullYear()===now.getFullYear())
-      .reduce((s,t)=>s+t.amount,0);
+      .filter(t => t.isExpense && t.category === b.category && 
+        new Date(t.date).getMonth() === now.getMonth() && 
+        new Date(t.date).getFullYear() === now.getFullYear())
+      .reduce((s, t) => s + t.amount, 0);
   });
 }
 
-function filteredTx(){
+function filteredTx() {
   const now = new Date();
-  return data.transactions.filter(t=>{
+  return data.transactions.filter(t => {
     const d = new Date(t.date);
-    if(period==='week'){ const s=new Date(now); s.setDate(now.getDate()-now.getDay()); return d>=s; }
-    if(period==='month') return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
-    if(period==='year') return d.getFullYear()===now.getFullYear();
+    if (period === 'week') {
+      const start = new Date(now);
+      start.setDate(now.getDate() - now.getDay());
+      return d >= start;
+    }
+    if (period === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    if (period === 'year') return d.getFullYear() === now.getFullYear();
     return true;
   });
 }
 
-function income(){ return filteredTx().filter(t=>!t.isExpense).reduce((s,t)=>s+t.amount,0); }
-function expenses(){ return filteredTx().filter(t=>t.isExpense).reduce((s,t)=>s+t.amount,0); }
-function balance(){ return data.accounts.reduce((s,a)=>s+a.balance,0); }
-function subsMonth(){ return data.subscriptions.reduce((s,x)=>s+(x.frequency==='yearly'?x.amount/12:x.amount),0); }
+function income() { return filteredTx().filter(t => !t.isExpense).reduce((s, t) => s + t.amount, 0); }
+function expenses() { return filteredTx().filter(t => t.isExpense).reduce((s, t) => s + t.amount, 0); }
+function balance() { return data.accounts.reduce((s, a) => s + a.balance, 0); }
+function subsMonth() { return data.subscriptions.reduce((s, x) => s + (x.frequency === 'yearly' ? x.amount / 12 : x.amount), 0); }
 
-function go(name, btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  if(btn) btn.classList.add('active');
-  document.getElementById('fabBtn').style.display = (name==='dashboard'||name==='transactions') ? 'flex' : 'none';
+function go(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('fabBtn').style.display = (name === 'dashboard' || name === 'transactions') ? 'flex' : 'none';
   render(name);
 }
 
-function render(name){
-  if(name==='dashboard') renderDash();
-  else if(name==='transactions') renderTx();
-  else if(name==='analytics') renderAna();
-  else if(name==='planning') renderPlan();
-  else if(name==='more') renderMore();
+function render(name) {
+  if (name === 'dashboard') renderDash();
+  else if (name === 'transactions') renderTx();
+  else if (name === 'analytics') renderAna();
+  else if (name === 'planning') renderPlan();
+  else if (name === 'more') renderMore();
 }
 
-// ========== DASHBOARD ==========
-function renderDash(){
+function $(id) { return document.getElementById(id); }
+
+// ===================== DASHBOARD =====================
+function renderDash() {
   const inc = income(), exp = expenses(), bal = balance();
-  const rate = inc>0 ? Math.round(((inc-exp)/inc)*100) : 0;
-  let insights = [];
-  if(inc>0) insights.push(rate>=20 ? `Excellent ! Tu épargnes ${rate}% de tes revenus.` : `Taux d'épargne : ${rate}%. Vise ≥ 20%.`);
-  if(subsMonth()>80) insights.push(`Abonnements : ${chf(subsMonth())}/mois.`);
-  insights.push(`Patrimoine net : ${chf(bal)}.`);
+  const rate = inc > 0 ? Math.round(((inc - exp) / inc) * 100) : 0;
+  const insights = [];
+  if (inc > 0) insights.push(rate >= 20 ? `Excellent ! Tu épargnes ${rate}% de tes revenus ce mois.` : `Ton taux d'épargne est de ${rate}%. Objectif recommandé : ≥ 20%.`);
+  if (subsMonth() > 100) insights.push(`Tes abonnements coûtent ${chf(subsMonth())} par mois. Vérifie les inutiles.`);
+  insights.push(`Patrimoine net actuel : ${chf(bal)}.`);
+  const topCat = Object.entries(filteredTx().filter(t=>t.isExpense).reduce((a,t)=>{a[t.category]=(a[t.category]||0)+t.amount;return a;},{})).sort((a,b)=>b[1]-a[1])[0];
+  if (topCat) insights.push(`Plus grosse catégorie : ${topCat[0]} (${chf(topCat[1])}).`);
 
-  const recent = [...data.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6);
+  const recent = [...data.transactions].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 7);
 
-  document.getElementById('page-dashboard').innerHTML = `
+  $('page-dashboard').innerHTML = `
     <div class="segmented">
       <button class="${period==='week'?'active':''}" onclick="period='week';renderDash()">Semaine</button>
       <button class="${period==='month'?'active':''}" onclick="period='month';renderDash()">Mois</button>
       <button class="${period==='year'?'active':''}" onclick="period='year';renderDash()">Année</button>
     </div>
-    <div class="card" style="text-align:center">
+
+    <div class="card" style="text-align:center;padding:22px">
       <div class="card-title">Patrimoine net</div>
       <div class="big-number">${chf(bal)}</div>
     </div>
+
     <div class="row">
-      <div class="card"><div class="card-title">Revenus</div><div style="font-size:18px;font-weight:700;color:var(--green)">${chf(inc)}</div></div>
-      <div class="card"><div class="card-title">Dépenses</div><div style="font-size:18px;font-weight:700;color:var(--red)">${chf(exp)}</div></div>
+      <div class="card">
+        <div class="card-title">Revenus</div>
+        <div style="font-size:20px;font-weight:800;color:var(--green)">${chf(inc)}</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Dépenses</div>
+        <div style="font-size:20px;font-weight:800;color:var(--red)">${chf(exp)}</div>
+      </div>
     </div>
-    <div class="section-title">Insights</div>
-    ${insights.map(i=>`<div class="insight"><div>💡</div><div>${i}</div></div>`).join('')}
+
+    <div class="section-title">Insights intelligents</div>
+    ${insights.map(i => `<div class="insight"><div style="font-size:18px">💡</div><div>${i}</div></div>`).join('')}
+
     <div class="section-title">Objectifs</div>
-    ${data.goals.slice(0,3).map(g=>{
-      const p=Math.min(100,Math.round(g.current/g.target*100));
+    ${data.goals.map(g => {
+      const p = Math.min(100, Math.round(g.current / g.target * 100));
       return `<div class="card" onclick="editGoal(${g.id})" style="cursor:pointer">
-        <div style="display:flex;justify-content:space-between"><span style="font-weight:600">${g.icon} ${g.name}</span><strong>${p}%</strong></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${p}%;background:var(--orange)"></div></div>
-        <div style="font-size:12px;color:var(--text2)">${chf(g.current)} / ${chf(g.target)}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:700;font-size:16px">${g.icon} ${g.name}</span>
+          <span style="font-weight:800;color:var(--orange)">${p}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p}%;background:linear-gradient(90deg,var(--orange),#FFB340)"></div></div>
+        <div style="font-size:13px;color:var(--text2)">${chf(g.current)} sur ${chf(g.target)}</div>
       </div>`;
     }).join('')}
+
     <div class="section-title">Dernières transactions</div>
-    <div class="card" style="padding:4px 16px">
-      ${recent.map(t=>`
+    <div class="card" style="padding:6px 18px">
+      ${recent.length ? recent.map(t => `
         <div class="list-item" onclick="editTx(${t.id})">
-          <div class="icon-circle" style="background:${t.isExpense?'rgba(255,69,58,.15)':'rgba(48,209,88,.15)'}">${t.isExpense?'↑':'↓'}</div>
-          <div class="item-info"><div class="item-title">${t.merchant||t.category}</div><div class="item-sub">${t.category} · ${dte(t.date)}</div></div>
-          <div class="item-amount ${t.isExpense?'amount-expense':'amount-income'}">${t.isExpense?'-':'+'}${chf(t.amount)}</div>
-        </div>`).join('')}
+          <div class="icon-circle" style="background:${t.isExpense ? 'rgba(255,69,58,0.15)' : 'rgba(48,209,88,0.15)'};color:${t.isExpense ? 'var(--red)' : 'var(--green)'}">${t.isExpense ? '↑' : '↓'}</div>
+          <div class="item-info">
+            <div class="item-title">${t.merchant || t.category}</div>
+            <div class="item-sub">${t.category} · ${dte(t.date)}</div>
+          </div>
+          <div class="item-amount ${t.isExpense ? 'amount-expense' : 'amount-income'}">${t.isExpense ? '-' : '+'}${chf(t.amount)}</div>
+        </div>`).join('') : '<div class="empty"><div class="empty-icon">📭</div>Aucune transaction</div>'}
     </div>`;
 }
 
-// ========== TRANSACTIONS ==========
-function renderTx(){
-  const list = [...data.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date));
-  document.getElementById('page-transactions').innerHTML = `
+// ===================== TRANSACTIONS =====================
+function renderTx() {
+  const list = [...data.transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+  $('page-transactions').innerHTML = `
     <input class="search-box" id="search" placeholder="Rechercher une transaction..." oninput="filterTx()">
-    <div class="card" style="padding:4px 16px" id="txList">
-      ${list.length?list.map(t=>txHTML(t)).join(''):'<div class="empty">Aucune transaction</div>'}
+    <div class="card" style="padding:6px 18px" id="txList">
+      ${list.length ? list.map(t => txHTML(t)).join('') : '<div class="empty"><div class="empty-icon">📭</div>Aucune transaction</div>'}
     </div>`;
 }
-function txHTML(t){
+
+function txHTML(t) {
   return `<div class="list-item" onclick="editTx(${t.id})">
-    <div class="icon-circle" style="background:${t.isExpense?'rgba(255,69,58,.15)':'rgba(48,209,88,.15)'}">${t.isExpense?'↑':'↓'}</div>
-    <div class="item-info"><div class="item-title">${t.merchant||t.category}</div><div class="item-sub">${t.category} · ${dte(t.date)}</div></div>
-    <div class="item-amount ${t.isExpense?'amount-expense':'amount-income'}">${t.isExpense?'-':'+'}${chf(t.amount)}</div>
+    <div class="icon-circle" style="background:${t.isExpense ? 'rgba(255,69,58,0.15)' : 'rgba(48,209,88,0.15)'};color:${t.isExpense ? 'var(--red)' : 'var(--green)'}">${t.isExpense ? '↑' : '↓'}</div>
+    <div class="item-info">
+      <div class="item-title">${t.merchant || t.category}</div>
+      <div class="item-sub">${t.category} · ${dte(t.date)}</div>
+    </div>
+    <div class="item-amount ${t.isExpense ? 'amount-expense' : 'amount-income'}">${t.isExpense ? '-' : '+'}${chf(t.amount)}</div>
   </div>`;
 }
-function filterTx(){
-  const q = (document.getElementById('search').value||'').toLowerCase();
-  const f = data.transactions.filter(t=>(t.merchant+' '+t.category).toLowerCase().includes(q));
-  document.getElementById('txList').innerHTML = f.length ? f.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(t=>txHTML(t)).join('') : '<div class="empty">Aucun résultat</div>';
+
+function filterTx() {
+  const q = ($('search').value || '').toLowerCase();
+  const f = data.transactions.filter(t => (t.merchant + ' ' + t.category + ' ' + (t.note||'')).toLowerCase().includes(q));
+  $('txList').innerHTML = f.length ? f.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(t => txHTML(t)).join('') : '<div class="empty">Aucun résultat</div>';
 }
 
-// ========== ANALYTICS ==========
-function renderAna(){
-  const txs = filteredTx().filter(t=>t.isExpense);
+// ===================== ANALYTICS =====================
+function renderAna() {
+  const txs = filteredTx().filter(t => t.isExpense);
   const byCat = {};
-  txs.forEach(t=>byCat[t.category]=(byCat[t.category]||0)+t.amount);
-  const cats = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+  txs.forEach(t => byCat[t.category] = (byCat[t.category] || 0) + t.amount);
+  const cats = Object.entries(byCat).sort((a,b) => b[1] - a[1]);
   const inc = income(), exp = expenses();
 
   const months = [];
   const now = new Date();
-  for(let i=5;i>=0;i--){
-    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-    const label = d.toLocaleDateString('fr-CH',{month:'short'});
-    const total = data.transactions.filter(t=>t.isExpense && new Date(t.date).getMonth()===d.getMonth() && new Date(t.date).getFullYear()===d.getFullYear()).reduce((s,t)=>s+t.amount,0);
-    months.push({label,total});
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const label = d.toLocaleDateString('fr-CH', { month: 'short' });
+    const total = data.transactions.filter(t => t.isExpense && new Date(t.date).getMonth() === d.getMonth() && new Date(t.date).getFullYear() === d.getFullYear()).reduce((s,t) => s + t.amount, 0);
+    months.push({ label, total });
   }
 
-  document.getElementById('page-analytics').innerHTML = `
+  $('page-analytics').innerHTML = `
     <div class="segmented">
       <button class="${period==='week'?'active':''}" onclick="period='week';renderAna()">Semaine</button>
       <button class="${period==='month'?'active':''}" onclick="period='month';renderAna()">Mois</button>
       <button class="${period==='year'?'active':''}" onclick="period='year';renderAna()">Année</button>
     </div>
+
     <div class="row">
-      <div class="card"><div class="card-title">Revenus</div><div style="font-size:16px;font-weight:700;color:var(--green)">${chf(inc)}</div></div>
-      <div class="card"><div class="card-title">Dépenses</div><div style="font-size:16px;font-weight:700;color:var(--red)">${chf(exp)}</div></div>
-      <div class="card"><div class="card-title">Solde</div><div style="font-size:16px;font-weight:700;color:${inc-exp>=0?'var(--green)':'var(--red)'}">${chf(inc-exp)}</div></div>
+      <div class="card"><div class="card-title">Revenus</div><div style="font-size:17px;font-weight:800;color:var(--green)">${chf(inc)}</div></div>
+      <div class="card"><div class="card-title">Dépenses</div><div style="font-size:17px;font-weight:800;color:var(--red)">${chf(exp)}</div></div>
+      <div class="card"><div class="card-title">Solde</div><div style="font-size:17px;font-weight:800;color:${inc-exp>=0?'var(--green)':'var(--red)'}">${chf(inc-exp)}</div></div>
     </div>
-    <div class="card"><div class="card-title">Dépenses par catégorie</div><div class="chart-box"><canvas id="c1"></canvas></div></div>
-    <div class="card"><div class="card-title">Tendance 6 mois</div><div class="chart-box"><canvas id="c2"></canvas></div></div>
-    <div class="card" style="padding:4px 16px">
-      ${cats.map(([c,a])=>`<div class="list-item"><div class="item-info"><div class="item-title">${c}</div></div><div class="item-amount">${chf(a)}</div></div>`).join('')}
+
+    <div class="card">
+      <div class="card-title">Répartition des dépenses</div>
+      <div class="chart-box"><canvas id="c1"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Évolution des 6 derniers mois</div>
+      <div class="chart-box"><canvas id="c2"></canvas></div>
+    </div>
+
+    <div class="card" style="padding:6px 18px">
+      ${cats.map(([c,a]) => {
+        const pct = exp > 0 ? Math.round(a / exp * 100) : 0;
+        return `<div class="list-item">
+          <div class="item-info"><div class="item-title">${c}</div><div class="item-sub">${pct}% du total</div></div>
+          <div class="item-amount">${chf(a)}</div>
+        </div>`;
+      }).join('')}
     </div>`;
 
-  setTimeout(()=>{
-    if(chartCat) chartCat.destroy();
-    if(chartTrend) chartTrend.destroy();
-    const ctx1 = document.getElementById('c1');
-    if(ctx1 && cats.length){
-      chartCat = new Chart(ctx1,{type:'doughnut',data:{labels:cats.map(x=>x[0]),datasets:[{data:cats.map(x=>x[1]),backgroundColor:['#0A84FF','#30D158','#FF9F0A','#FF453A','#BF5AF2','#64D2FF','#FFD60A','#AC8E68'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#8E8E93',boxWidth:12,padding:10}}}}});
+  setTimeout(() => {
+    if (chartCat) chartCat.destroy();
+    if (chartTrend) chartTrend.destroy();
+    const ctx1 = $('c1');
+    if (ctx1 && cats.length) {
+      chartCat = new Chart(ctx1, {
+        type: 'doughnut',
+        data: {
+          labels: cats.map(x => x[0]),
+          datasets: [{ data: cats.map(x => x[1]), backgroundColor: ['#0A84FF','#30D158','#FF9F0A','#FF453A','#BF5AF2','#64D2FF','#FFD60A','#AC8E68','#FF375F'], borderWidth: 0 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '62%', plugins: { legend: { position: 'bottom', labels: { color: '#8E8E93', boxWidth: 12, padding: 12, font: { size: 12 } } } } }
+      });
     }
-    const ctx2 = document.getElementById('c2');
-    if(ctx2){
-      chartTrend = new Chart(ctx2,{type:'bar',data:{labels:months.map(m=>m.label),datasets:[{data:months.map(m=>m.total),backgroundColor:'#0A84FF',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8E8E93'},grid:{display:false}},y:{ticks:{color:'#8E8E93'},grid:{color:'rgba(255,255,255,.06)'}}}}});
+    const ctx2 = $('c2');
+    if (ctx2) {
+      chartTrend = new Chart(ctx2, {
+        type: 'bar',
+        data: { labels: months.map(m => m.label), datasets: [{ data: months.map(m => m.total), backgroundColor: '#0A84FF', borderRadius: 8, borderSkipped: false }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#8E8E93' }, grid: { display: false } }, y: { ticks: { color: '#8E8E93' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+      });
     }
-  },50);
+  }, 40);
 }
 
-// ========== PLANNING ==========
-function renderPlan(){
+// ===================== PLANNING =====================
+function renderPlan() {
   updateBudgets();
-  document.getElementById('page-planning').innerHTML = `
-    <div class="section-title">Budgets</div>
-    ${data.budgets.map(b=>{
-      const p=Math.min(100,Math.round((b.spent||0)/b.limit*100));
-      const col=p>90?'var(--red)':'var(--green)';
+  $('page-planning').innerHTML = `
+    <div class="section-title">Budgets mensuels</div>
+    ${data.budgets.map(b => {
+      const p = Math.min(100, Math.round((b.spent || 0) / b.limit * 100));
+      const col = p > 90 ? 'var(--red)' : p > 70 ? 'var(--orange)' : 'var(--green)';
       return `<div class="card" onclick="editBudget(${b.id})" style="cursor:pointer">
-        <div style="display:flex;justify-content:space-between"><strong>${b.category}</strong><span style="font-size:13px;color:var(--text2)">${chf(b.spent||0)} / ${chf(b.limit)}</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:700;font-size:16px">${b.category}</span>
+          <span style="font-size:13px;color:var(--text2)">${chf(b.spent||0)} / ${chf(b.limit)}</span>
+        </div>
         <div class="progress-bar"><div class="progress-fill" style="width:${p}%;background:${col}"></div></div>
-        <div style="font-size:12px;color:var(--text2)">Reste ${chf(Math.max(0,b.limit-(b.spent||0)))}</div>
+        <div style="font-size:13px;color:var(--text2)">Reste ${chf(Math.max(0, b.limit - (b.spent||0)))} · ${p}%</div>
       </div>`;
     }).join('')}
-    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddBudget()">+ Ajouter un budget</button>
+    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="openAddBudget()">+ Ajouter un budget</button>
 
     <div class="section-title">Objectifs d'épargne</div>
-    ${data.goals.map(g=>{
-      const p=Math.min(100,Math.round(g.current/g.target*100));
+    ${data.goals.map(g => {
+      const p = Math.min(100, Math.round(g.current / g.target * 100));
       return `<div class="card" onclick="editGoal(${g.id})" style="cursor:pointer">
-        <div style="display:flex;justify-content:space-between"><span style="font-weight:600">${g.icon} ${g.name}</span><strong style="color:var(--orange)">${p}%</strong></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${p}%;background:var(--orange)"></div></div>
-        <div style="font-size:12px;color:var(--text2)">${chf(g.current)} / ${chf(g.target)}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:700;font-size:16px">${g.icon} ${g.name}</span>
+          <span style="font-weight:800;color:var(--orange)">${p}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p}%;background:linear-gradient(90deg,var(--orange),#FFB340)"></div></div>
+        <div style="font-size:13px;color:var(--text2)">${chf(g.current)} sur ${chf(g.target)}</div>
       </div>`;
     }).join('')}
-    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddGoal()">+ Ajouter un objectif</button>
+    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="openAddGoal()">+ Ajouter un objectif</button>
 
     <div class="section-title">Simulateur de patrimoine</div>
     <div class="card">
       <div class="form-group"><label>Épargne actuelle (CHF)</label><input type="number" id="simC" value="50000"></div>
       <div class="form-group"><label>Versement mensuel (CHF)</label><input type="number" id="simM" value="1000"></div>
-      <div class="form-group"><label>Rendement annuel (%)</label><input type="number" id="simR" value="5" step="0.1"></div>
+      <div class="form-group"><label>Rendement annuel estimé (%)</label><input type="number" id="simR" value="5" step="0.1"></div>
       <div class="form-group"><label>Durée (années)</label><input type="number" id="simY" value="20"></div>
-      <button class="btn" onclick="runSim()">Calculer</button>
+      <button class="btn" onclick="runSim()">Calculer le patrimoine futur</button>
       <div id="simOut"></div>
     </div>`;
 }
-function runSim(){
-  const c=+$('simC').value||0, m=+$('simM').value||0, r=($('simR').value||0)/100/12, n=($('simY').value||0)*12;
-  const fv = r===0 ? c+m*n : c*Math.pow(1+r,n) + m*(Math.pow(1+r,n)-1)/r;
-  $('simOut').innerHTML = `<div class="sim-result"><div class="card-title">Patrimoine estimé dans ${$('simY').value} ans</div><div class="big-number" style="color:var(--green)">${chf(fv)}</div></div>`;
+
+function runSim() {
+  const c = +$('simC').value || 0;
+  const m = +$('simM').value || 0;
+  const r = (+$('simR').value || 0) / 100 / 12;
+  const n = (+$('simY').value || 0) * 12;
+  const fv = r === 0 ? c + m * n : c * Math.pow(1 + r, n) + m * (Math.pow(1 + r, n) - 1) / r;
+  $('simOut').innerHTML = `<div class="sim-result">
+    <div class="card-title">Patrimoine estimé dans ${$('simY').value} ans</div>
+    <div class="big-number" style="color:var(--green);font-size:32px">${chf(fv)}</div>
+  </div>`;
 }
 
-// ========== MORE ==========
-function renderMore(){
-  document.getElementById('page-more').innerHTML = `
+// ===================== MORE =====================
+function renderMore() {
+  $('page-more').innerHTML = `
     <div class="section-title">Comptes</div>
-    <div class="card" style="padding:4px 16px">
-      ${data.accounts.map(a=>`
+    <div class="card" style="padding:6px 18px">
+      ${data.accounts.map(a => `
         <div class="list-item" onclick="editAccount(${a.id})">
-          <div class="icon-circle" style="background:rgba(10,132,255,.15)">🏦</div>
-          <div class="item-info"><div class="item-title">${a.name}</div><div class="item-sub">${a.institution||''} · ${a.type}</div></div>
+          <div class="icon-circle" style="background:rgba(10,132,255,0.15)">🏦</div>
+          <div class="item-info">
+            <div class="item-title">${a.name}</div>
+            <div class="item-sub">${a.institution || ''} · ${a.type}</div>
+          </div>
           <div class="item-amount">${chf(a.balance)}</div>
         </div>`).join('')}
     </div>
-    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddAccount()">+ Ajouter un compte</button>
+    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="openAddAccount()">+ Ajouter un compte</button>
 
-    <div class="section-title">Abonnements <span style="color:var(--purple);font-size:14px">(${chf(subsMonth())}/mois)</span></div>
-    <div class="card" style="padding:4px 16px">
-      ${data.subscriptions.map(s=>`
+    <div class="section-title">Abonnements <span class="badge">${chf(subsMonth())}/mois</span></div>
+    <div class="card" style="padding:6px 18px">
+      ${data.subscriptions.map(s => `
         <div class="list-item" onclick="editSub(${s.id})">
-          <div class="item-info"><div class="item-title">${s.name}</div><div class="item-sub">${s.frequency==='yearly'?'Annuel':'Mensuel'}</div></div>
+          <div class="item-info">
+            <div class="item-title">${s.name}</div>
+            <div class="item-sub">${s.frequency === 'yearly' ? 'Annuel' : 'Mensuel'}</div>
+          </div>
           <div class="item-amount">${chf(s.amount)}</div>
         </div>`).join('')}
     </div>
-    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddSub()">+ Ajouter un abonnement</button>
+    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="openAddSub()">+ Ajouter un abonnement</button>
 
-    <div class="section-title">Optimisation fiscale Suisse</div>
+    <div class="section-title">Optimisation fiscale Suisse 2026</div>
     <div class="card">
       ${[
-        "3e pilier A déductible jusqu'à 7'258 CHF (salariés) ou 36'288 CHF (indépendants) en 2026.",
-        "Frais de transport domicile-travail (CFF, voiture, etc.).",
-        "Frais de formation continue professionnelle.",
-        "Dons à des organisations d'utilité publique.",
-        "Intérêts hypothécaires et frais d'entretien d'immeuble.",
+        "Cotisations 3e pilier A : déductibles jusqu'à 7'258 CHF (salariés) ou 36'288 CHF (indépendants).",
+        "Frais de transport domicile-travail (CFF, voiture, vélo, etc.).",
+        "Frais de formation continue et perfectionnement professionnel.",
+        "Dons à des organisations d'utilité publique reconnues.",
+        "Intérêts hypothécaires + frais d'entretien de l'immeuble.",
         "Frais de garde d'enfants (selon canton).",
-        "Vérifie les conventions de double imposition."
-      ].map(t=>`<div class="tax-tip"><div style="color:var(--green)">✓</div><div>${t}</div></div>`).join('')}
+        "Vérifie les conventions de double imposition si tu as des avoirs à l'étranger."
+      ].map(t => `<div class="tax-tip"><div style="color:var(--green);font-size:18px">✓</div><div>${t}</div></div>`).join('')}
     </div>
 
-    <div class="section-title">Données</div>
-    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="exportData()">Exporter les données (JSON)</button>
-    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="document.getElementById('imp').click()">Importer des données</button>
+    <div class="section-title">Gestion des données</div>
+    <button class="btn btn-secondary" style="margin-bottom:10px" onclick="exportData()">Exporter les données (JSON)</button>
+    <button class="btn btn-secondary" style="margin-bottom:10px" onclick="$('imp').click()">Importer des données</button>
     <input type="file" id="imp" accept=".json" hidden onchange="importData(event)">
-    <button class="btn btn-danger" onclick="if(confirm('Tout supprimer définitivement ?')){localStorage.removeItem(KEY);location.reload()}">Réinitialiser l'application</button>
+    <button class="btn btn-danger" onclick="if(confirm('Supprimer toutes les données ? Cette action est irréversible.')){localStorage.removeItem(KEY);location.reload()}">Réinitialiser l'application</button>
   `;
 }
 
-// ========== MODALS ==========
-function $(id){ return document.getElementById(id); }
-function openModal(html){ $('modalBody').innerHTML=html; $('modal').classList.add('show'); }
-function closeModal(){ $('modal').classList.remove('show'); }
+// ===================== MODALS & CRUD =====================
+function openModal(html) {
+  $('modalBody').innerHTML = html;
+  $('modal').classList.add('show');
+}
+function closeModal() { $('modal').classList.remove('show'); }
 
-function openAddTx(){
+function openAddTx() {
   openModal(`
     <div class="modal-header"><h2>Nouvelle transaction</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Montant (CHF)</label><input type="number" id="f-amount" step="0.05"></div>
+    <div class="form-group"><label>Montant (CHF)</label><input type="number" id="f-amount" step="0.05" inputmode="decimal"></div>
     <div class="segmented">
       <button class="active" id="btnExp" onclick="setType(true)">Dépense</button>
       <button id="btnInc" onclick="setType(false)">Revenu</button>
     </div>
     <div class="form-group"><label>Catégorie</label>
-      <select id="f-cat"><option>Alimentation</option><option>Transport</option><option>Logement</option><option>Santé</option><option>Loisirs</option><option>Shopping</option><option>Restaurants</option><option>Abonnements</option><option>Salaire</option><option>Autre</option></select>
+      <select id="f-cat">
+        <option>Alimentation</option><option>Transport</option><option>Logement</option><option>Santé</option>
+        <option>Loisirs</option><option>Shopping</option><option>Restaurants</option><option>Abonnements</option>
+        <option>Salaire</option><option>Investissement</option><option>Autre</option>
+      </select>
     </div>
-    <div class="form-group"><label>Marchand</label><input id="f-merch" placeholder="Ex: Migros"></div>
+    <div class="form-group"><label>Marchand / Description</label><input id="f-merch" placeholder="Ex: Migros, CFF..."></div>
+    <div class="form-group"><label>Note (optionnel)</label><input id="f-note" placeholder="Note personnelle"></div>
     <div class="form-group"><label>Date</label><input type="date" id="f-date" value="${new Date().toISOString().slice(0,10)}"></div>
-    <button class="btn" onclick="saveTx()">Ajouter</button>`);
+    <button class="btn" onclick="saveTx()">Ajouter la transaction</button>`);
   window.isExp = true;
 }
-function setType(exp){
+
+function setType(exp) {
   window.isExp = exp;
-  $('btnExp').classList.toggle('active',exp);
-  $('btnInc').classList.toggle('active',!exp);
+  $('btnExp').classList.toggle('active', exp);
+  $('btnInc').classList.toggle('active', !exp);
 }
-function saveTx(id){
+
+function saveTx(id) {
   const amount = +$('f-amount').value;
-  if(!amount||amount<=0) return alert('Montant invalide');
-  const obj = {amount, category:$('f-cat').value, merchant:$('f-merch').value, isExpense:window.isExp!==false, date:$('f-date').value};
-  if(id){
-    const t = data.transactions.find(x=>x.id===id);
-    Object.assign(t,obj);
+  if (!amount || amount <= 0) return alert('Montant invalide');
+  const obj = {
+    amount,
+    category: $('f-cat').value,
+    merchant: $('f-merch').value.trim(),
+    note: $('f-note') ? $('f-note').value.trim() : '',
+    isExpense: window.isExp !== false,
+    date: $('f-date').value
+  };
+  if (id) {
+    Object.assign(data.transactions.find(x => x.id === id), obj);
   } else {
     obj.id = uid();
     data.transactions.push(obj);
   }
   save(); updateBudgets(); closeModal();
-  render(document.querySelector('.page.active').id.replace('page-',''));
+  render(document.querySelector('.page.active').id.replace('page-', ''));
 }
-function editTx(id){
-  const t = data.transactions.find(x=>x.id===id);
-  if(!t) return;
+
+function editTx(id) {
+  const t = data.transactions.find(x => x.id === id);
+  if (!t) return;
   window.isExp = t.isExpense;
   openModal(`
-    <div class="modal-header"><h2>Modifier</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Montant</label><input type="number" id="f-amount" value="${t.amount}" step="0.05"></div>
+    <div class="modal-header"><h2>Modifier transaction</h2><button class="close-btn" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label>Montant (CHF)</label><input type="number" id="f-amount" value="${t.amount}" step="0.05"></div>
     <div class="segmented">
       <button class="${t.isExpense?'active':''}" id="btnExp" onclick="setType(true)">Dépense</button>
       <button class="${!t.isExpense?'active':''}" id="btnInc" onclick="setType(false)">Revenu</button>
     </div>
     <div class="form-group"><label>Catégorie</label>
       <select id="f-cat">
-        ${['Alimentation','Transport','Logement','Santé','Loisirs','Shopping','Restaurants','Abonnements','Salaire','Autre'].map(c=>`<option ${c===t.category?'selected':''}>${c}</option>`).join('')}
+        ${['Alimentation','Transport','Logement','Santé','Loisirs','Shopping','Restaurants','Abonnements','Salaire','Investissement','Autre'].map(c => `<option ${c===t.category?'selected':''}>${c}</option>`).join('')}
       </select>
     </div>
     <div class="form-group"><label>Marchand</label><input id="f-merch" value="${t.merchant||''}"></div>
+    <div class="form-group"><label>Note</label><input id="f-note" value="${t.note||''}"></div>
     <div class="form-group"><label>Date</label><input type="date" id="f-date" value="${t.date}"></div>
     <div class="action-btns">
       <button class="btn btn-danger" onclick="delTx(${id})">Supprimer</button>
       <button class="btn" onclick="saveTx(${id})">Enregistrer</button>
     </div>`);
 }
-function delTx(id){
-  if(!confirm('Supprimer cette transaction ?')) return;
-  data.transactions = data.transactions.filter(t=>t.id!==id);
+
+function delTx(id) {
+  if (!confirm('Supprimer définitivement cette transaction ?')) return;
+  data.transactions = data.transactions.filter(t => t.id !== id);
   save(); updateBudgets(); closeModal();
-  render(document.querySelector('.page.active').id.replace('page-',''));
+  render(document.querySelector('.page.active').id.replace('page-', ''));
 }
 
-function openAddAccount(){
+function openAddAccount() {
   openModal(`
     <div class="modal-header"><h2>Nouveau compte</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Nom</label><input id="a-name"></div>
-    <div class="form-group"><label>Institution</label><input id="a-inst"></div>
-    <div class="form-group"><label>Type</label><select id="a-type"><option>Banque</option><option>Crypto</option><option>Investissement</option><option>Pension</option><option>Espèces</option></select></div>
-    <div class="form-group"><label>Solde (CHF)</label><input type="number" id="a-bal" value="0"></div>
-    <button class="btn" onclick="saveAccount()">Créer</button>`);
+    <div class="form-group"><label>Nom du compte</label><input id="a-name" placeholder="Ex: Compte UBS"></div>
+    <div class="form-group"><label>Institution</label><input id="a-inst" placeholder="Ex: UBS, PostFinance..."></div>
+    <div class="form-group"><label>Type</label>
+      <select id="a-type"><option>Banque</option><option>Crypto</option><option>Investissement</option><option>Pension</option><option>Espèces</option></select>
+    </div>
+    <div class="form-group"><label>Solde actuel (CHF)</label><input type="number" id="a-bal" value="0"></div>
+    <button class="btn" onclick="saveAccount()">Créer le compte</button>`);
 }
-function saveAccount(id){
+
+function saveAccount(id) {
   const name = $('a-name').value.trim();
-  if(!name) return alert('Nom obligatoire');
-  const obj = {name, institution:$('a-inst').value, type:$('a-type').value, balance:+$('a-bal').value||0};
-  if(id) Object.assign(data.accounts.find(a=>a.id===id),obj);
-  else { obj.id=uid(); data.accounts.push(obj); }
+  if (!name) return alert('Le nom est obligatoire');
+  const obj = { name, institution: $('a-inst').value.trim(), type: $('a-type').value, balance: +$('a-bal').value || 0 };
+  if (id) Object.assign(data.accounts.find(a => a.id === id), obj);
+  else { obj.id = uid(); data.accounts.push(obj); }
   save(); closeModal(); renderMore();
 }
-function editAccount(id){
-  const a = data.accounts.find(x=>x.id===id);
+
+function editAccount(id) {
+  const a = data.accounts.find(x => x.id === id);
   openModal(`
     <div class="modal-header"><h2>Modifier compte</h2><button class="close-btn" onclick="closeModal()">×</button></div>
     <div class="form-group"><label>Nom</label><input id="a-name" value="${a.name}"></div>
     <div class="form-group"><label>Institution</label><input id="a-inst" value="${a.institution||''}"></div>
-    <div class="form-group"><label>Type</label><select id="a-type">
-      ${['Banque','Crypto','Investissement','Pension','Espèces'].map(t=>`<option ${t===a.type?'selected':''}>${t}</option>`).join('')}
-    </select></div>
+    <div class="form-group"><label>Type</label>
+      <select id="a-type">${['Banque','Crypto','Investissement','Pension','Espèces'].map(t => `<option ${t===a.type?'selected':''}>${t}</option>`).join('')}</select>
+    </div>
     <div class="form-group"><label>Solde</label><input type="number" id="a-bal" value="${a.balance}"></div>
     <div class="action-btns">
       <button class="btn btn-danger" onclick="delAccount(${id})">Supprimer</button>
       <button class="btn" onclick="saveAccount(${id})">Enregistrer</button>
     </div>`);
 }
-function delAccount(id){
-  if(!confirm('Supprimer ce compte ?')) return;
-  data.accounts = data.accounts.filter(a=>a.id!==id);
+
+function delAccount(id) {
+  if (!confirm('Supprimer ce compte ?')) return;
+  data.accounts = data.accounts.filter(a => a.id !== id);
   save(); closeModal(); renderMore();
 }
 
-function openAddBudget(){
+function openAddBudget() {
   openModal(`
     <div class="modal-header"><h2>Nouveau budget</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Catégorie</label><select id="b-cat"><option>Alimentation</option><option>Transport</option><option>Loisirs</option><option>Shopping</option><option>Restaurants</option><option>Abonnements</option><option>Santé</option><option>Autre</option></select></div>
-    <div class="form-group"><label>Limite mensuelle</label><input type="number" id="b-lim" value="500"></div>
-    <button class="btn" onclick="saveBudget()">Créer</button>`);
+    <div class="form-group"><label>Catégorie</label>
+      <select id="b-cat"><option>Alimentation</option><option>Transport</option><option>Loisirs</option><option>Shopping</option><option>Restaurants</option><option>Abonnements</option><option>Santé</option><option>Autre</option></select>
+    </div>
+    <div class="form-group"><label>Limite mensuelle (CHF)</label><input type="number" id="b-lim" value="500"></div>
+    <button class="btn" onclick="saveBudget()">Créer le budget</button>`);
 }
-function saveBudget(id){
-  const obj = {category:$('b-cat').value, limit:+$('b-lim').value||0};
-  if(id) Object.assign(data.budgets.find(b=>b.id===id),obj);
-  else { obj.id=uid(); data.budgets.push(obj); }
+
+function saveBudget(id) {
+  const obj = { category: $('b-cat').value, limit: +$('b-lim').value || 0 };
+  if (id) Object.assign(data.budgets.find(b => b.id === id), obj);
+  else { obj.id = uid(); data.budgets.push(obj); }
   save(); updateBudgets(); closeModal(); renderPlan();
 }
-function editBudget(id){
-  const b = data.budgets.find(x=>x.id===id);
+
+function editBudget(id) {
+  const b = data.budgets.find(x => x.id === id);
   openModal(`
     <div class="modal-header"><h2>Modifier budget</h2><button class="close-btn" onclick="closeModal()">×</button></div>
     <div class="form-group"><label>Catégorie</label><input id="b-cat" value="${b.category}"></div>
-    <div class="form-group"><label>Limite</label><input type="number" id="b-lim" value="${b.limit}"></div>
+    <div class="form-group"><label>Limite mensuelle</label><input type="number" id="b-lim" value="${b.limit}"></div>
     <div class="action-btns">
       <button class="btn btn-danger" onclick="delBudget(${id})">Supprimer</button>
       <button class="btn" onclick="saveBudget(${id})">Enregistrer</button>
     </div>`);
 }
-function delBudget(id){
-  if(!confirm('Supprimer ce budget ?')) return;
-  data.budgets = data.budgets.filter(b=>b.id!==id);
+
+function delBudget(id) {
+  if (!confirm('Supprimer ce budget ?')) return;
+  data.budgets = data.budgets.filter(b => b.id !== id);
   save(); closeModal(); renderPlan();
 }
 
-function openAddGoal(){
+function openAddGoal() {
   openModal(`
     <div class="modal-header"><h2>Nouvel objectif</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Nom</label><input id="g-name"></div>
-    <div class="form-group"><label>Montant cible</label><input type="number" id="g-target" value="5000"></div>
-    <div class="form-group"><label>Déjà épargné</label><input type="number" id="g-cur" value="0"></div>
-    <button class="btn" onclick="saveGoal()">Créer</button>`);
+    <div class="form-group"><label>Nom de l'objectif</label><input id="g-name" placeholder="Ex: Vacances, Fonds d'urgence..."></div>
+    <div class="form-group"><label>Montant cible (CHF)</label><input type="number" id="g-target" value="5000"></div>
+    <div class="form-group"><label>Déjà épargné (CHF)</label><input type="number" id="g-cur" value="0"></div>
+    <button class="btn" onclick="saveGoal()">Créer l'objectif</button>`);
 }
-function saveGoal(id){
+
+function saveGoal(id) {
   const name = $('g-name').value.trim();
-  if(!name) return alert('Nom obligatoire');
-  const obj = {name, target:+$('g-target').value||0, current:+$('g-cur').value||0, icon:'🎯'};
-  if(id) Object.assign(data.goals.find(g=>g.id===id),obj);
-  else { obj.id=uid(); data.goals.push(obj); }
+  if (!name) return alert('Le nom est obligatoire');
+  const obj = { name, target: +$('g-target').value || 0, current: +$('g-cur').value || 0, icon: '🎯' };
+  if (id) Object.assign(data.goals.find(g => g.id === id), obj);
+  else { obj.id = uid(); data.goals.push(obj); }
   save(); closeModal(); renderPlan();
 }
-function editGoal(id){
-  const g = data.goals.find(x=>x.id===id);
+
+function editGoal(id) {
+  const g = data.goals.find(x => x.id === id);
   openModal(`
     <div class="modal-header"><h2>Modifier objectif</h2><button class="close-btn" onclick="closeModal()">×</button></div>
     <div class="form-group"><label>Nom</label><input id="g-name" value="${g.name}"></div>
-    <div class="form-group"><label>Cible</label><input type="number" id="g-target" value="${g.target}"></div>
-    <div class="form-group"><label>Actuel</label><input type="number" id="g-cur" value="${g.current}"></div>
+    <div class="form-group"><label>Montant cible</label><input type="number" id="g-target" value="${g.target}"></div>
+    <div class="form-group"><label>Montant actuel</label><input type="number" id="g-cur" value="${g.current}"></div>
     <div class="action-btns">
       <button class="btn btn-danger" onclick="delGoal(${id})">Supprimer</button>
       <button class="btn" onclick="saveGoal(${id})">Enregistrer</button>
     </div>`);
 }
-function delGoal(id){
-  if(!confirm('Supprimer cet objectif ?')) return;
-  data.goals = data.goals.filter(g=>g.id!==id);
+
+function delGoal(id) {
+  if (!confirm('Supprimer cet objectif ?')) return;
+  data.goals = data.goals.filter(g => g.id !== id);
   save(); closeModal(); renderPlan();
 }
 
-function openAddSub(){
+function openAddSub() {
   openModal(`
     <div class="modal-header"><h2>Nouvel abonnement</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Nom</label><input id="s-name"></div>
-    <div class="form-group"><label>Montant</label><input type="number" id="s-amount" step="0.05"></div>
-    <div class="form-group"><label>Fréquence</label><select id="s-freq"><option value="monthly">Mensuel</option><option value="yearly">Annuel</option></select></div>
+    <div class="form-group"><label>Nom</label><input id="s-name" placeholder="Ex: Netflix, Spotify..."></div>
+    <div class="form-group"><label>Montant (CHF)</label><input type="number" id="s-amount" step="0.05"></div>
+    <div class="form-group"><label>Fréquence</label>
+      <select id="s-freq"><option value="monthly">Mensuel</option><option value="yearly">Annuel</option></select>
+    </div>
     <button class="btn" onclick="saveSub()">Ajouter</button>`);
 }
-function saveSub(id){
+
+function saveSub(id) {
   const name = $('s-name').value.trim();
-  if(!name) return alert('Nom obligatoire');
-  const obj = {name, amount:+$('s-amount').value||0, frequency:$('s-freq').value};
-  if(id) Object.assign(data.subscriptions.find(s=>s.id===id),obj);
-  else { obj.id=uid(); data.subscriptions.push(obj); }
+  if (!name) return alert('Le nom est obligatoire');
+  const obj = { name, amount: +$('s-amount').value || 0, frequency: $('s-freq').value };
+  if (id) Object.assign(data.subscriptions.find(s => s.id === id), obj);
+  else { obj.id = uid(); data.subscriptions.push(obj); }
   save(); closeModal(); renderMore();
 }
-function editSub(id){
-  const s = data.subscriptions.find(x=>x.id===id);
+
+function editSub(id) {
+  const s = data.subscriptions.find(x => x.id === id);
   openModal(`
     <div class="modal-header"><h2>Modifier abonnement</h2><button class="close-btn" onclick="closeModal()">×</button></div>
     <div class="form-group"><label>Nom</label><input id="s-name" value="${s.name}"></div>
     <div class="form-group"><label>Montant</label><input type="number" id="s-amount" value="${s.amount}" step="0.05"></div>
-    <div class="form-group"><label>Fréquence</label><select id="s-freq"><option value="monthly" ${s.frequency==='monthly'?'selected':''}>Mensuel</option><option value="yearly" ${s.frequency==='yearly'?'selected':''}>Annuel</option></select></div>
+    <div class="form-group"><label>Fréquence</label>
+      <select id="s-freq">
+        <option value="monthly" ${s.frequency==='monthly'?'selected':''}>Mensuel</option>
+        <option value="yearly" ${s.frequency==='yearly'?'selected':''}>Annuel</option>
+      </select>
+    </div>
     <div class="action-btns">
       <button class="btn btn-danger" onclick="delSub(${id})">Supprimer</button>
       <button class="btn" onclick="saveSub(${id})">Enregistrer</button>
     </div>`);
 }
-function delSub(id){
-  if(!confirm('Supprimer cet abonnement ?')) return;
-  data.subscriptions = data.subscriptions.filter(s=>s.id!==id);
+
+function delSub(id) {
+  if (!confirm('Supprimer cet abonnement ?')) return;
+  data.subscriptions = data.subscriptions.filter(s => s.id !== id);
   save(); closeModal(); renderMore();
 }
 
-function exportData(){
-  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+function exportData() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'swisswealth-backup.json';
   a.click();
 }
-function importData(e){
+
+function importData(e) {
   const file = e.target.files[0];
-  if(!file) return;
-  const r = new FileReader();
-  r.onload = ev=>{
-    try{ data=JSON.parse(ev.target.result); save(); location.reload(); }
-    catch(err){ alert('Fichier invalide'); }
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      data = JSON.parse(ev.target.result);
+      save();
+      location.reload();
+    } catch (err) {
+      alert('Fichier JSON invalide');
+    }
   };
-  r.readAsText(file);
+  reader.readAsText(file);
 }
 
-// START
+// INIT
 load();
 renderDash();
 </script>
