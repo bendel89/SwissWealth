@@ -9,86 +9,67 @@
 <title>SwissWealth</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root {
-  --bg: #000000;
-  --card: #1C1C1E;
-  --card2: #2C2C2E;
-  --text: #FFFFFF;
-  --text2: #8E8E93;
-  --blue: #0A84FF;
-  --green: #30D158;
-  --red: #FF453A;
-  --orange: #FF9F0A;
-  --purple: #BF5AF2;
-  --yellow: #FFD60A;
-  --radius: 16px;
-  --safe-top: env(safe-area-inset-top);
-  --safe-bottom: env(safe-area-inset-bottom);
-}
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif; }
-body { background:var(--bg); color:var(--text); min-height:100vh; padding-top:var(--safe-top); padding-bottom:calc(85px + var(--safe-bottom)); overflow-x:hidden; }
-.header { position:sticky; top:0; z-index:100; background:rgba(0,0,0,0.88); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); padding:14px 20px 12px; border-bottom:1px solid rgba(255,255,255,0.07); }
-.header h1 { font-size:22px; font-weight:700; letter-spacing:-0.4px; }
-.header-sub { font-size:13px; color:var(--text2); margin-top:2px; }
-.nav { position:fixed; bottom:0; left:0; right:0; background:rgba(28,28,30,0.96); backdrop-filter:blur(20px); display:flex; justify-content:space-around; padding:10px 0 calc(10px + var(--safe-bottom)); border-top:1px solid rgba(255,255,255,0.08); z-index:100; }
-.nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text2); font-size:10px; background:none; border:none; padding:6px 10px; }
-.nav-item.active { color:var(--blue); }
-.nav-item svg { width:24px; height:24px; }
-.page { display:none; padding:16px; animation:fadeIn .22s ease; }
-.page.active { display:block; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-.card { background:var(--card); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
-.card-title { font-size:13px; color:var(--text2); margin-bottom:6px; font-weight:500; }
-.big-number { font-size:32px; font-weight:700; letter-spacing:-1px; }
-.row { display:flex; gap:10px; margin-bottom:12px; }
-.row .card { flex:1; margin-bottom:0; }
-.btn { background:var(--blue); color:#fff; border:none; border-radius:14px; padding:14px; font-size:16px; font-weight:600; width:100%; }
-.btn:active { opacity:.75; }
-.btn-secondary { background:var(--card2); }
-.btn-danger { background:var(--red); }
-.btn-sm { padding:8px 14px; font-size:14px; border-radius:10px; width:auto; }
-.list-item { display:flex; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.06); cursor:pointer; }
-.list-item:last-child { border-bottom:none; }
-.list-item:active { opacity:.7; }
-.icon-circle { width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
-.item-info { flex:1; min-width:0; }
-.item-title { font-weight:600; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.item-sub { font-size:12px; color:var(--text2); margin-top:2px; }
-.item-amount { font-weight:600; font-size:15px; text-align:right; }
-.amount-expense { color:var(--red); }
-.amount-income { color:var(--green); }
-.progress-bar { height:7px; background:var(--card2); border-radius:4px; overflow:hidden; margin:7px 0; }
-.progress-fill { height:100%; border-radius:4px; transition:width .35s ease; }
-.form-group { margin-bottom:14px; }
-.form-group label { display:block; font-size:13px; color:var(--text2); margin-bottom:5px; }
-.form-group input, .form-group select, .form-group textarea {
-  width:100%; background:var(--card2); border:none; border-radius:12px; padding:13px 15px; color:var(--text); font-size:16px; outline:none;
-}
-.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.72); z-index:200; display:none; align-items:flex-end; justify-content:center; }
-.modal-overlay.show { display:flex; }
-.modal { background:var(--card); width:100%; max-width:500px; border-radius:20px 20px 0 0; padding:22px 18px calc(22px + var(--safe-bottom)); max-height:92vh; overflow-y:auto; animation:slideUp .28s ease; }
-@keyframes slideUp { from{transform:translateY(100%)} to{transform:none} }
-.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
-.modal-header h2 { font-size:19px; font-weight:700; }
-.close-btn { background:var(--card2); border:none; width:32px; height:32px; border-radius:50%; color:var(--text); font-size:18px; }
-.segmented { display:flex; background:var(--card2); border-radius:10px; padding:3px; margin-bottom:14px; }
-.segmented button { flex:1; background:none; border:none; color:var(--text2); padding:8px; border-radius:8px; font-size:14px; font-weight:500; }
-.segmented button.active { background:var(--card); color:var(--text); }
-.insight { background:rgba(255,214,10,0.11); border-radius:12px; padding:13px; margin-bottom:9px; display:flex; gap:11px; }
-.chart-container { position:relative; height:210px; margin:8px 0 4px; }
-.empty { text-align:center; padding:40px 16px; color:var(--text2); }
-.fab { position:fixed; right:18px; bottom:calc(95px + var(--safe-bottom)); width:54px; height:54px; border-radius:50%; background:var(--blue); color:#fff; border:none; font-size:28px; box-shadow:0 4px 18px rgba(10,132,255,0.45); z-index:90; display:flex; align-items:center; justify-content:center; }
-.section-title { font-size:17px; font-weight:700; margin:18px 0 10px; }
-.search-box { width:100%; background:var(--card2); border:none; border-radius:12px; padding:12px 14px; color:var(--text); font-size:15px; margin-bottom:12px; }
-.action-btns { display:flex; gap:8px; margin-top:14px; }
-.action-btns .btn { flex:1; }
-.sim-result { text-align:center; padding:20px; background:linear-gradient(135deg,rgba(10,132,255,0.18),rgba(48,209,88,0.18)); border-radius:var(--radius); margin-top:14px; }
-.tax-tip { display:flex; gap:11px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:14px; line-height:1.4; }
-.tax-tip:last-child { border-bottom:none; }
+:root{--bg:#000;--card:#1C1C1E;--card2:#2C2C2E;--text:#fff;--text2:#8E8E93;--blue:#0A84FF;--green:#30D158;--red:#FF453A;--orange:#FF9F0A;--purple:#BF5AF2;--radius:16px;--safe-top:env(safe-area-inset-top);--safe-bottom:env(safe-area-inset-bottom)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh;padding-top:var(--safe-top);padding-bottom:calc(90px + var(--safe-bottom));overflow-x:hidden}
+.header{position:sticky;top:0;z-index:100;background:rgba(0,0,0,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:14px 20px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.header h1{font-size:22px;font-weight:700}
+.header-sub{font-size:13px;color:var(--text2);margin-top:2px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;padding:10px 0 calc(12px + var(--safe-bottom));border-top:1px solid rgba(255,255,255,.08);z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text2);font-size:10px;background:none;border:none;padding:6px 8px}
+.nav-item.active{color:var(--blue)}
+.nav-item svg{width:24px;height:24px}
+.page{display:none;padding:16px;animation:fade .2s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.card-title{font-size:13px;color:var(--text2);margin-bottom:6px}
+.big-number{font-size:32px;font-weight:700;letter-spacing:-1px}
+.row{display:flex;gap:10px;margin-bottom:12px}
+.row .card{flex:1;margin-bottom:0}
+.btn{background:var(--blue);color:#fff;border:none;border-radius:14px;padding:14px;font-size:16px;font-weight:600;width:100%}
+.btn:active{opacity:.75}
+.btn-secondary{background:var(--card2)}
+.btn-danger{background:var(--red)}
+.list-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.list-item:last-child{border-bottom:none}
+.list-item:active{opacity:.65}
+.icon-circle{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.item-info{flex:1;min-width:0}
+.item-title{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.item-amount{font-weight:600;font-size:15px;text-align:right}
+.amount-expense{color:var(--red)}
+.amount-income{color:var(--green)}
+.progress-bar{height:7px;background:var(--card2);border-radius:4px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;border-radius:4px;transition:width .3s}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;color:var(--text2);margin-bottom:5px}
+.form-group input,.form-group select{width:100%;background:var(--card2);border:none;border-radius:12px;padding:13px 15px;color:var(--text);font-size:16px;outline:none}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);width:100%;max-width:500px;border-radius:20px 20px 0 0;padding:22px 18px calc(24px + var(--safe-bottom));max-height:92vh;overflow-y:auto;animation:slide .25s ease}
+@keyframes slide{from{transform:translateY(100%)}to{transform:none}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.modal-header h2{font-size:19px;font-weight:700}
+.close-btn{background:var(--card2);border:none;width:32px;height:32px;border-radius:50%;color:var(--text);font-size:18px}
+.segmented{display:flex;background:var(--card2);border-radius:10px;padding:3px;margin-bottom:14px}
+.segmented button{flex:1;background:none;border:none;color:var(--text2);padding:8px;border-radius:8px;font-size:14px;font-weight:500}
+.segmented button.active{background:var(--card);color:var(--text)}
+.insight{background:rgba(255,214,10,.12);border-radius:12px;padding:13px;margin-bottom:9px;display:flex;gap:11px;font-size:14px}
+.chart-box{position:relative;height:210px;margin:8px 0}
+.fab{position:fixed;right:18px;bottom:calc(100px + var(--safe-bottom));width:56px;height:56px;border-radius:50%;background:var(--blue);color:#fff;border:none;font-size:30px;box-shadow:0 4px 20px rgba(10,132,255,.45);z-index:90;display:flex;align-items:center;justify-content:center}
+.section-title{font-size:17px;font-weight:700;margin:18px 0 10px}
+.search-box{width:100%;background:var(--card2);border:none;border-radius:12px;padding:12px 14px;color:var(--text);font-size:15px;margin-bottom:12px}
+.action-btns{display:flex;gap:10px;margin-top:16px}
+.action-btns .btn{flex:1}
+.sim-result{text-align:center;padding:20px;background:linear-gradient(135deg,rgba(10,132,255,.2),rgba(48,209,88,.2));border-radius:var(--radius);margin-top:14px}
+.tax-tip{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px;line-height:1.4}
+.tax-tip:last-child{border-bottom:none}
+.empty{text-align:center;padding:40px 16px;color:var(--text2)}
 </style>
 </head>
 <body>
-
 <div class="header">
   <h1>SwissWealth</h1>
   <div class="header-sub">Gestion financière intelligente 🇨🇭</div>
@@ -100,46 +81,36 @@ body { background:var(--bg); color:var(--text); min-height:100vh; padding-top:va
 <div id="page-planning" class="page"></div>
 <div id="page-more" class="page"></div>
 
-<button class="fab" id="fab" onclick="openAddTransaction()">+</button>
+<button class="fab" id="fabBtn" onclick="openAddTx()">+</button>
 
 <nav class="nav">
-  <button class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Dashboard
-  </button>
-  <button class="nav-item" data-page="transactions" onclick="showPage('transactions',this)">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>Transactions
-  </button>
-  <button class="nav-item" data-page="analytics" onclick="showPage('analytics',this)">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>Analytics
-  </button>
-  <button class="nav-item" data-page="planning" onclick="showPage('planning',this)">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>Planning
-  </button>
-  <button class="nav-item" data-page="more" onclick="showPage('more',this)">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>Plus
-  </button>
+  <button class="nav-item active" onclick="go('dashboard',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Dashboard</button>
+  <button class="nav-item" onclick="go('transactions',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>Transactions</button>
+  <button class="nav-item" onclick="go('analytics',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>Analytics</button>
+  <button class="nav-item" onclick="go('planning',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>Planning</button>
+  <button class="nav-item" onclick="go('more',this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>Plus</button>
 </nav>
 
-<div class="modal-overlay" id="modal"><div class="modal" id="modal-content"></div></div>
+<div class="modal-overlay" id="modal"><div class="modal" id="modalBody"></div></div>
 
 <script>
-const STORAGE_KEY = 'swisswealth_v2';
-let data = { accounts:[], transactions:[], budgets:[], goals:[], subscriptions:[] };
-let currentPeriod = 'month';
-let charts = {};
+const KEY = 'swisswealth_final_v3';
+let data = {accounts:[],transactions:[],budgets:[],goals:[],subscriptions:[]};
+let period = 'month';
+let chartCat = null, chartTrend = null;
 
-function loadData() {
-  const s = localStorage.getItem(STORAGE_KEY);
+function load() {
+  const s = localStorage.getItem(KEY);
   if (s) data = JSON.parse(s);
   else {
     data = {
-      accounts: [
+      accounts:[
         {id:1,name:'Compte UBS',type:'Banque',balance:12450,institution:'UBS'},
         {id:2,name:'PostFinance',type:'Banque',balance:3200,institution:'PostFinance'},
         {id:3,name:'Binance',type:'Crypto',balance:8700,institution:'Binance'},
         {id:4,name:'3e pilier A',type:'Pension',balance:45000,institution:'Swiss Life'}
       ],
-      transactions: [
+      transactions:[
         {id:1,amount:4200,category:'Salaire',merchant:'Tech SA',isExpense:false,date:'2026-09-28'},
         {id:2,amount:85,category:'Alimentation',merchant:'Migros',isExpense:true,date:'2026-09-30'},
         {id:3,amount:12.5,category:'Transport',merchant:'CFF',isExpense:true,date:'2026-10-01'},
@@ -151,17 +122,17 @@ function loadData() {
         {id:9,amount:35,category:'Santé',merchant:'Pharmacie',isExpense:true,date:'2026-09-18'},
         {id:10,amount:15,category:'Loisirs',merchant:'Cinéma',isExpense:true,date:'2026-09-25'}
       ],
-      budgets: [
+      budgets:[
         {id:1,category:'Alimentation',limit:600},
         {id:2,category:'Restaurants',limit:300},
         {id:3,category:'Loisirs',limit:200}
       ],
-      goals: [
+      goals:[
         {id:1,name:"Fonds d'urgence",target:20000,current:8500,icon:'🛡️'},
         {id:2,name:'Vacances Japon 2027',target:6000,current:1200,icon:'✈️'},
         {id:3,name:'Apport logement',target:80000,current:32000,icon:'🏠'}
       ],
-      subscriptions: [
+      subscriptions:[
         {id:1,name:'Netflix',amount:19.9,frequency:'monthly'},
         {id:2,name:'Spotify',amount:12.9,frequency:'monthly'},
         {id:3,name:'iCloud+',amount:2.95,frequency:'monthly'},
@@ -169,490 +140,490 @@ function loadData() {
         {id:5,name:'CFF AG',amount:3860,frequency:'yearly'}
       ]
     };
-    saveData();
+    save();
   }
-  updateBudgetsSpent();
+  updateBudgets();
 }
 
-function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
+function uid(){ return Date.now() + Math.floor(Math.random()*999); }
+function chf(n){ return new Intl.NumberFormat('fr-CH',{style:'currency',currency:'CHF'}).format(n||0); }
+function dte(d){ return new Date(d).toLocaleDateString('fr-CH',{day:'numeric',month:'short'}); }
 
-function uid() { return Date.now() + Math.floor(Math.random()*1000); }
-function formatCHF(n) { return new Intl.NumberFormat('fr-CH',{style:'currency',currency:'CHF'}).format(n||0); }
-function formatDate(d) { return new Date(d).toLocaleDateString('fr-CH',{day:'numeric',month:'short'}); }
-
-function updateBudgetsSpent() {
+function updateBudgets(){
   const now = new Date();
-  data.budgets.forEach(b => {
+  data.budgets.forEach(b=>{
     b.spent = data.transactions
-      .filter(t => t.isExpense && t.category === b.category && new Date(t.date).getMonth() === now.getMonth() && new Date(t.date).getFullYear() === now.getFullYear())
-      .reduce((s,t) => s + t.amount, 0);
+      .filter(t=>t.isExpense && t.category===b.category && new Date(t.date).getMonth()===now.getMonth() && new Date(t.date).getFullYear()===now.getFullYear())
+      .reduce((s,t)=>s+t.amount,0);
   });
 }
 
-function totalBalance() { return data.accounts.reduce((s,a)=>s+a.balance,0); }
-
-function getFilteredTransactions() {
+function filteredTx(){
   const now = new Date();
-  return data.transactions.filter(t => {
+  return data.transactions.filter(t=>{
     const d = new Date(t.date);
-    if (currentPeriod === 'week') {
-      const start = new Date(now); start.setDate(now.getDate()-now.getDay());
-      return d >= start;
-    }
-    if (currentPeriod === 'month') return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
-    if (currentPeriod === 'year') return d.getFullYear()===now.getFullYear();
+    if(period==='week'){ const s=new Date(now); s.setDate(now.getDate()-now.getDay()); return d>=s; }
+    if(period==='month') return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+    if(period==='year') return d.getFullYear()===now.getFullYear();
     return true;
   });
 }
 
-function monthlyIncome() {
-  return getFilteredTransactions().filter(t=>!t.isExpense).reduce((s,t)=>s+t.amount,0);
-}
-function monthlyExpenses() {
-  return getFilteredTransactions().filter(t=>t.isExpense).reduce((s,t)=>s+t.amount,0);
-}
-function totalSubsMonthly() {
-  return data.subscriptions.reduce((s,sub)=> s + (sub.frequency==='yearly'?sub.amount/12:sub.amount),0);
-}
+function income(){ return filteredTx().filter(t=>!t.isExpense).reduce((s,t)=>s+t.amount,0); }
+function expenses(){ return filteredTx().filter(t=>t.isExpense).reduce((s,t)=>s+t.amount,0); }
+function balance(){ return data.accounts.reduce((s,a)=>s+a.balance,0); }
+function subsMonth(){ return data.subscriptions.reduce((s,x)=>s+(x.frequency==='yearly'?x.amount/12:x.amount),0); }
 
-function showPage(name, btn) {
+function go(name, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  if (btn) btn.classList.add('active');
-  document.getElementById('fab').style.display = (name==='dashboard'||name==='transactions') ? 'flex' : 'none';
-  renderPage(name);
+  if(btn) btn.classList.add('active');
+  document.getElementById('fabBtn').style.display = (name==='dashboard'||name==='transactions') ? 'flex' : 'none';
+  render(name);
 }
 
-function renderPage(name) {
-  if (name==='dashboard') renderDashboard();
-  else if (name==='transactions') renderTransactions();
-  else if (name==='analytics') renderAnalytics();
-  else if (name==='planning') renderPlanning();
-  else if (name==='more') renderMore();
+function render(name){
+  if(name==='dashboard') renderDash();
+  else if(name==='transactions') renderTx();
+  else if(name==='analytics') renderAna();
+  else if(name==='planning') renderPlan();
+  else if(name==='more') renderMore();
 }
 
-// ================= DASHBOARD =================
-function renderDashboard() {
-  const income = monthlyIncome();
-  const expenses = monthlyExpenses();
-  const balance = totalBalance();
-  const rate = income > 0 ? Math.round(((income-expenses)/income)*100) : 0;
-  const insights = [];
-  if (income>0) insights.push(rate>=20 ? `Excellent ! Tu épargnes ${rate}% de tes revenus.` : `Ton taux d'épargne est de ${rate}%. Vise ≥ 20%.`);
-  const subs = totalSubsMonthly();
-  if (subs>80) insights.push(`Tes abonnements coûtent ${formatCHF(subs)}/mois.`);
-  insights.push(`Patrimoine net : ${formatCHF(balance)}.`);
+// ========== DASHBOARD ==========
+function renderDash(){
+  const inc = income(), exp = expenses(), bal = balance();
+  const rate = inc>0 ? Math.round(((inc-exp)/inc)*100) : 0;
+  let insights = [];
+  if(inc>0) insights.push(rate>=20 ? `Excellent ! Tu épargnes ${rate}% de tes revenus.` : `Taux d'épargne : ${rate}%. Vise ≥ 20%.`);
+  if(subsMonth()>80) insights.push(`Abonnements : ${chf(subsMonth())}/mois.`);
+  insights.push(`Patrimoine net : ${chf(bal)}.`);
 
   const recent = [...data.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6);
 
   document.getElementById('page-dashboard').innerHTML = `
     <div class="segmented">
-      <button class="${currentPeriod==='week'?'active':''}" onclick="setPeriod('week')">Semaine</button>
-      <button class="${currentPeriod==='month'?'active':''}" onclick="setPeriod('month')">Mois</button>
-      <button class="${currentPeriod==='year'?'active':''}" onclick="setPeriod('year')">Année</button>
+      <button class="${period==='week'?'active':''}" onclick="period='week';renderDash()">Semaine</button>
+      <button class="${period==='month'?'active':''}" onclick="period='month';renderDash()">Mois</button>
+      <button class="${period==='year'?'active':''}" onclick="period='year';renderDash()">Année</button>
     </div>
     <div class="card" style="text-align:center">
       <div class="card-title">Patrimoine net</div>
-      <div class="big-number">${formatCHF(balance)}</div>
+      <div class="big-number">${chf(bal)}</div>
     </div>
     <div class="row">
-      <div class="card"><div class="card-title">Revenus</div><div style="font-size:18px;font-weight:700;color:var(--green)">${formatCHF(income)}</div></div>
-      <div class="card"><div class="card-title">Dépenses</div><div style="font-size:18px;font-weight:700;color:var(--red)">${formatCHF(expenses)}</div></div>
+      <div class="card"><div class="card-title">Revenus</div><div style="font-size:18px;font-weight:700;color:var(--green)">${chf(inc)}</div></div>
+      <div class="card"><div class="card-title">Dépenses</div><div style="font-size:18px;font-weight:700;color:var(--red)">${chf(exp)}</div></div>
     </div>
     <div class="section-title">Insights</div>
-    ${insights.map(i=>`<div class="insight"><div>💡</div><div style="font-size:14px">${i}</div></div>`).join('')}
+    ${insights.map(i=>`<div class="insight"><div>💡</div><div>${i}</div></div>`).join('')}
     <div class="section-title">Objectifs</div>
     ${data.goals.slice(0,3).map(g=>{
-      const pct=Math.min(100,Math.round(g.current/g.target*100));
-      return `<div class="card" onclick="editGoal(${g.id})">
-        <div style="display:flex;justify-content:space-between"><span style="font-weight:600">${g.icon} ${g.name}</span><span style="font-weight:700">${pct}%</span></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--orange)"></div></div>
-        <div style="font-size:12px;color:var(--text2)">${formatCHF(g.current)} / ${formatCHF(g.target)}</div>
+      const p=Math.min(100,Math.round(g.current/g.target*100));
+      return `<div class="card" onclick="editGoal(${g.id})" style="cursor:pointer">
+        <div style="display:flex;justify-content:space-between"><span style="font-weight:600">${g.icon} ${g.name}</span><strong>${p}%</strong></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p}%;background:var(--orange)"></div></div>
+        <div style="font-size:12px;color:var(--text2)">${chf(g.current)} / ${chf(g.target)}</div>
       </div>`;
     }).join('')}
     <div class="section-title">Dernières transactions</div>
-    <div class="card" style="padding:6px 16px">
+    <div class="card" style="padding:4px 16px">
       ${recent.map(t=>`
-        <div class="list-item" onclick="editTransaction(${t.id})">
+        <div class="list-item" onclick="editTx(${t.id})">
           <div class="icon-circle" style="background:${t.isExpense?'rgba(255,69,58,.15)':'rgba(48,209,88,.15)'}">${t.isExpense?'↑':'↓'}</div>
-          <div class="item-info"><div class="item-title">${t.merchant||t.category}</div><div class="item-sub">${t.category} · ${formatDate(t.date)}</div></div>
-          <div class="item-amount ${t.isExpense?'amount-expense':'amount-income'}">${t.isExpense?'-':'+'}${formatCHF(t.amount)}</div>
+          <div class="item-info"><div class="item-title">${t.merchant||t.category}</div><div class="item-sub">${t.category} · ${dte(t.date)}</div></div>
+          <div class="item-amount ${t.isExpense?'amount-expense':'amount-income'}">${t.isExpense?'-':'+'}${chf(t.amount)}</div>
         </div>`).join('')}
     </div>`;
 }
 
-function setPeriod(p) { currentPeriod=p; renderDashboard(); }
-
-// ================= TRANSACTIONS =================
-function renderTransactions() {
-  const sorted = [...data.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date));
+// ========== TRANSACTIONS ==========
+function renderTx(){
+  const list = [...data.transactions].sort((a,b)=>new Date(b.date)-new Date(a.date));
   document.getElementById('page-transactions').innerHTML = `
-    <input class="search-box" id="searchTx" placeholder="Rechercher..." oninput="filterTx()">
-    <div class="card" style="padding:6px 16px" id="txList">
-      ${sorted.length===0?'<div class="empty">Aucune transaction</div>':sorted.map(t=>txRow(t)).join('')}
+    <input class="search-box" id="search" placeholder="Rechercher une transaction..." oninput="filterTx()">
+    <div class="card" style="padding:4px 16px" id="txList">
+      ${list.length?list.map(t=>txHTML(t)).join(''):'<div class="empty">Aucune transaction</div>'}
     </div>`;
 }
-function txRow(t) {
-  return `<div class="list-item" onclick="editTransaction(${t.id})">
+function txHTML(t){
+  return `<div class="list-item" onclick="editTx(${t.id})">
     <div class="icon-circle" style="background:${t.isExpense?'rgba(255,69,58,.15)':'rgba(48,209,88,.15)'}">${t.isExpense?'↑':'↓'}</div>
-    <div class="item-info"><div class="item-title">${t.merchant||t.category}</div><div class="item-sub">${t.category} · ${formatDate(t.date)}</div></div>
-    <div class="item-amount ${t.isExpense?'amount-expense':'amount-income'}">${t.isExpense?'-':'+'}${formatCHF(t.amount)}</div>
+    <div class="item-info"><div class="item-title">${t.merchant||t.category}</div><div class="item-sub">${t.category} · ${dte(t.date)}</div></div>
+    <div class="item-amount ${t.isExpense?'amount-expense':'amount-income'}">${t.isExpense?'-':'+'}${chf(t.amount)}</div>
   </div>`;
 }
-function filterTx() {
-  const q = document.getElementById('searchTx').value.toLowerCase();
-  const filtered = data.transactions.filter(t => (t.merchant+t.category+t.note||'').toLowerCase().includes(q));
-  document.getElementById('txList').innerHTML = filtered.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(t=>txRow(t)).join('') || '<div class="empty">Aucun résultat</div>';
+function filterTx(){
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  const f = data.transactions.filter(t=>(t.merchant+' '+t.category).toLowerCase().includes(q));
+  document.getElementById('txList').innerHTML = f.length ? f.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(t=>txHTML(t)).join('') : '<div class="empty">Aucun résultat</div>';
 }
 
-// ================= ANALYTICS =================
-function renderAnalytics() {
-  const txs = getFilteredTransactions();
-  const expenses = txs.filter(t=>t.isExpense);
+// ========== ANALYTICS ==========
+function renderAna(){
+  const txs = filteredTx().filter(t=>t.isExpense);
   const byCat = {};
-  expenses.forEach(t => byCat[t.category]=(byCat[t.category]||0)+t.amount);
-  const catData = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
-  const income = monthlyIncome();
-  const exp = monthlyExpenses();
+  txs.forEach(t=>byCat[t.category]=(byCat[t.category]||0)+t.amount);
+  const cats = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+  const inc = income(), exp = expenses();
 
-  // Monthly trend (last 6 months)
   const months = [];
   const now = new Date();
-  for (let i=5;i>=0;i--) {
+  for(let i=5;i>=0;i--){
     const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
     const label = d.toLocaleDateString('fr-CH',{month:'short'});
     const total = data.transactions.filter(t=>t.isExpense && new Date(t.date).getMonth()===d.getMonth() && new Date(t.date).getFullYear()===d.getFullYear()).reduce((s,t)=>s+t.amount,0);
-    months.push({label, total});
+    months.push({label,total});
   }
 
   document.getElementById('page-analytics').innerHTML = `
     <div class="segmented">
-      <button class="${currentPeriod==='week'?'active':''}" onclick="currentPeriod='week';renderAnalytics()">Semaine</button>
-      <button class="${currentPeriod==='month'?'active':''}" onclick="currentPeriod='month';renderAnalytics()">Mois</button>
-      <button class="${currentPeriod==='year'?'active':''}" onclick="currentPeriod='year';renderAnalytics()">Année</button>
+      <button class="${period==='week'?'active':''}" onclick="period='week';renderAna()">Semaine</button>
+      <button class="${period==='month'?'active':''}" onclick="period='month';renderAna()">Mois</button>
+      <button class="${period==='year'?'active':''}" onclick="period='year';renderAna()">Année</button>
     </div>
     <div class="row">
-      <div class="card"><div class="card-title">Revenus</div><div style="font-size:16px;font-weight:700;color:var(--green)">${formatCHF(income)}</div></div>
-      <div class="card"><div class="card-title">Dépenses</div><div style="font-size:16px;font-weight:700;color:var(--red)">${formatCHF(exp)}</div></div>
-      <div class="card"><div class="card-title">Solde</div><div style="font-size:16px;font-weight:700;color:${income-exp>=0?'var(--green)':'var(--red)'}">${formatCHF(income-exp)}</div></div>
+      <div class="card"><div class="card-title">Revenus</div><div style="font-size:16px;font-weight:700;color:var(--green)">${chf(inc)}</div></div>
+      <div class="card"><div class="card-title">Dépenses</div><div style="font-size:16px;font-weight:700;color:var(--red)">${chf(exp)}</div></div>
+      <div class="card"><div class="card-title">Solde</div><div style="font-size:16px;font-weight:700;color:${inc-exp>=0?'var(--green)':'var(--red)'}">${chf(inc-exp)}</div></div>
     </div>
-    <div class="card">
-      <div class="card-title">Dépenses par catégorie</div>
-      <div class="chart-container"><canvas id="catChart"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Tendance des 6 derniers mois</div>
-      <div class="chart-container"><canvas id="trendChart"></canvas></div>
-    </div>
-    <div class="card" style="padding:6px 16px">
-      ${catData.map(([c,a])=>`<div class="list-item"><div class="item-info"><div class="item-title">${c}</div></div><div class="item-amount">${formatCHF(a)}</div></div>`).join('')}
+    <div class="card"><div class="card-title">Dépenses par catégorie</div><div class="chart-box"><canvas id="c1"></canvas></div></div>
+    <div class="card"><div class="card-title">Tendance 6 mois</div><div class="chart-box"><canvas id="c2"></canvas></div></div>
+    <div class="card" style="padding:4px 16px">
+      ${cats.map(([c,a])=>`<div class="list-item"><div class="item-info"><div class="item-title">${c}</div></div><div class="item-amount">${chf(a)}</div></div>`).join('')}
     </div>`;
 
   setTimeout(()=>{
-    if (charts.cat) charts.cat.destroy();
-    if (charts.trend) charts.trend.destroy();
-    const ctx1 = document.getElementById('catChart');
-    if (ctx1 && catData.length) {
-      charts.cat = new Chart(ctx1,{type:'doughnut',data:{labels:catData.map(c=>c[0]),datasets:[{data:catData.map(c=>c[1]),backgroundColor:['#0A84FF','#30D158','#FF9F0A','#FF453A','#BF5AF2','#64D2FF','#FFD60A','#AC8E68'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#8E8E93',boxWidth:11,padding:10}}}}});
+    if(chartCat) chartCat.destroy();
+    if(chartTrend) chartTrend.destroy();
+    const ctx1 = document.getElementById('c1');
+    if(ctx1 && cats.length){
+      chartCat = new Chart(ctx1,{type:'doughnut',data:{labels:cats.map(x=>x[0]),datasets:[{data:cats.map(x=>x[1]),backgroundColor:['#0A84FF','#30D158','#FF9F0A','#FF453A','#BF5AF2','#64D2FF','#FFD60A','#AC8E68'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#8E8E93',boxWidth:12,padding:10}}}}});
     }
-    const ctx2 = document.getElementById('trendChart');
-    if (ctx2) {
-      charts.trend = new Chart(ctx2,{type:'bar',data:{labels:months.map(m=>m.label),datasets:[{data:months.map(m=>m.total),backgroundColor:'#0A84FF',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8E8E93'},grid:{display:false}},y:{ticks:{color:'#8E8E93'},grid:{color:'rgba(255,255,255,0.05)'}}}}});
+    const ctx2 = document.getElementById('c2');
+    if(ctx2){
+      chartTrend = new Chart(ctx2,{type:'bar',data:{labels:months.map(m=>m.label),datasets:[{data:months.map(m=>m.total),backgroundColor:'#0A84FF',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8E8E93'},grid:{display:false}},y:{ticks:{color:'#8E8E93'},grid:{color:'rgba(255,255,255,.06)'}}}}});
     }
-  },60);
+  },50);
 }
 
-// ================= PLANNING =================
-function renderPlanning() {
-  updateBudgetsSpent();
+// ========== PLANNING ==========
+function renderPlan(){
+  updateBudgets();
   document.getElementById('page-planning').innerHTML = `
     <div class="section-title">Budgets</div>
     ${data.budgets.map(b=>{
-      const pct=Math.min(100,Math.round((b.spent/b.limit)*100));
-      const col=pct>90?'var(--red)':'var(--green)';
-      return `<div class="card" onclick="editBudget(${b.id})">
-        <div style="display:flex;justify-content:space-between"><span style="font-weight:600">${b.category}</span><span style="font-size:13px;color:var(--text2)">${formatCHF(b.spent)} / ${formatCHF(b.limit)}</span></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${col}"></div></div>
-        <div style="font-size:12px;color:var(--text2)">Reste ${formatCHF(Math.max(0,b.limit-b.spent))}</div>
+      const p=Math.min(100,Math.round((b.spent||0)/b.limit*100));
+      const col=p>90?'var(--red)':'var(--green)';
+      return `<div class="card" onclick="editBudget(${b.id})" style="cursor:pointer">
+        <div style="display:flex;justify-content:space-between"><strong>${b.category}</strong><span style="font-size:13px;color:var(--text2)">${chf(b.spent||0)} / ${chf(b.limit)}</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p}%;background:${col}"></div></div>
+        <div style="font-size:12px;color:var(--text2)">Reste ${chf(Math.max(0,b.limit-(b.spent||0)))}</div>
       </div>`;
     }).join('')}
-    <button class="btn btn-secondary" style="margin-bottom:18px" onclick="openAddBudget()">+ Budget</button>
+    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddBudget()">+ Ajouter un budget</button>
 
-    <div class="section-title">Objectifs</div>
+    <div class="section-title">Objectifs d'épargne</div>
     ${data.goals.map(g=>{
-      const pct=Math.min(100,Math.round(g.current/g.target*100));
-      return `<div class="card" onclick="editGoal(${g.id})">
-        <div style="display:flex;justify-content:space-between"><span style="font-weight:600">${g.icon} ${g.name}</span><span style="font-weight:700;color:var(--orange)">${pct}%</span></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--orange)"></div></div>
-        <div style="font-size:12px;color:var(--text2)">${formatCHF(g.current)} / ${formatCHF(g.target)}</div>
+      const p=Math.min(100,Math.round(g.current/g.target*100));
+      return `<div class="card" onclick="editGoal(${g.id})" style="cursor:pointer">
+        <div style="display:flex;justify-content:space-between"><span style="font-weight:600">${g.icon} ${g.name}</span><strong style="color:var(--orange)">${p}%</strong></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${p}%;background:var(--orange)"></div></div>
+        <div style="font-size:12px;color:var(--text2)">${chf(g.current)} / ${chf(g.target)}</div>
       </div>`;
     }).join('')}
-    <button class="btn btn-secondary" style="margin-bottom:18px" onclick="openAddGoal()">+ Objectif</button>
+    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddGoal()">+ Ajouter un objectif</button>
 
     <div class="section-title">Simulateur de patrimoine</div>
     <div class="card">
-      <div class="form-group"><label>Épargne actuelle</label><input type="number" id="sim-c" value="50000"></div>
-      <div class="form-group"><label>Versement mensuel</label><input type="number" id="sim-m" value="1000"></div>
-      <div class="form-group"><label>Rendement annuel %</label><input type="number" id="sim-r" value="5" step="0.1"></div>
-      <div class="form-group"><label>Durée (années)</label><input type="number" id="sim-y" value="20"></div>
+      <div class="form-group"><label>Épargne actuelle (CHF)</label><input type="number" id="simC" value="50000"></div>
+      <div class="form-group"><label>Versement mensuel (CHF)</label><input type="number" id="simM" value="1000"></div>
+      <div class="form-group"><label>Rendement annuel (%)</label><input type="number" id="simR" value="5" step="0.1"></div>
+      <div class="form-group"><label>Durée (années)</label><input type="number" id="simY" value="20"></div>
       <button class="btn" onclick="runSim()">Calculer</button>
-      <div id="sim-res"></div>
+      <div id="simOut"></div>
     </div>`;
 }
-function runSim() {
-  const c=+document.getElementById('sim-c').value||0;
-  const m=+document.getElementById('sim-m').value||0;
-  const r=(+document.getElementById('sim-r').value||0)/100/12;
-  const n=(+document.getElementById('sim-y').value||0)*12;
-  const fv = r===0 ? c+m*n : c*Math.pow(1+r,n)+m*(Math.pow(1+r,n)-1)/r;
-  document.getElementById('sim-res').innerHTML=`<div class="sim-result"><div class="card-title">Patrimoine estimé</div><div class="big-number" style="color:var(--green)">${formatCHF(fv)}</div></div>`;
+function runSim(){
+  const c=+$('simC').value||0, m=+$('simM').value||0, r=($('simR').value||0)/100/12, n=($('simY').value||0)*12;
+  const fv = r===0 ? c+m*n : c*Math.pow(1+r,n) + m*(Math.pow(1+r,n)-1)/r;
+  $('simOut').innerHTML = `<div class="sim-result"><div class="card-title">Patrimoine estimé dans ${$('simY').value} ans</div><div class="big-number" style="color:var(--green)">${chf(fv)}</div></div>`;
 }
 
-// ================= MORE =================
-function renderMore() {
+// ========== MORE ==========
+function renderMore(){
   document.getElementById('page-more').innerHTML = `
     <div class="section-title">Comptes</div>
-    <div class="card" style="padding:6px 16px">
+    <div class="card" style="padding:4px 16px">
       ${data.accounts.map(a=>`
         <div class="list-item" onclick="editAccount(${a.id})">
           <div class="icon-circle" style="background:rgba(10,132,255,.15)">🏦</div>
-          <div class="item-info"><div class="item-title">${a.name}</div><div class="item-sub">${a.institution} · ${a.type}</div></div>
-          <div class="item-amount">${formatCHF(a.balance)}</div>
+          <div class="item-info"><div class="item-title">${a.name}</div><div class="item-sub">${a.institution||''} · ${a.type}</div></div>
+          <div class="item-amount">${chf(a.balance)}</div>
         </div>`).join('')}
     </div>
-    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddAccount()">+ Compte</button>
+    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddAccount()">+ Ajouter un compte</button>
 
-    <div class="section-title">Abonnements <span style="color:var(--purple);font-size:14px">(${formatCHF(totalSubsMonthly())}/mois)</span></div>
-    <div class="card" style="padding:6px 16px">
+    <div class="section-title">Abonnements <span style="color:var(--purple);font-size:14px">(${chf(subsMonth())}/mois)</span></div>
+    <div class="card" style="padding:4px 16px">
       ${data.subscriptions.map(s=>`
         <div class="list-item" onclick="editSub(${s.id})">
           <div class="item-info"><div class="item-title">${s.name}</div><div class="item-sub">${s.frequency==='yearly'?'Annuel':'Mensuel'}</div></div>
-          <div class="item-amount">${formatCHF(s.amount)}</div>
+          <div class="item-amount">${chf(s.amount)}</div>
         </div>`).join('')}
     </div>
-    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddSub()">+ Abonnement</button>
+    <button class="btn btn-secondary" style="margin-bottom:16px" onclick="openAddSub()">+ Ajouter un abonnement</button>
 
-    <div class="section-title">Optimisation fiscale CH</div>
+    <div class="section-title">Optimisation fiscale Suisse</div>
     <div class="card">
       ${[
-        "3e pilier A : déductible jusqu'à 7'258 CHF (salariés) / 36'288 CHF (indépendants) en 2026.",
-        "Frais de transport domicile-travail (CFF, voiture...).",
-        "Formation continue et perfectionnement professionnel.",
+        "3e pilier A déductible jusqu'à 7'258 CHF (salariés) ou 36'288 CHF (indépendants) en 2026.",
+        "Frais de transport domicile-travail (CFF, voiture, etc.).",
+        "Frais de formation continue professionnelle.",
         "Dons à des organisations d'utilité publique.",
-        "Intérêts hypothécaires + frais d'entretien immeuble.",
+        "Intérêts hypothécaires et frais d'entretien d'immeuble.",
         "Frais de garde d'enfants (selon canton).",
-        "Conventions de double imposition si comptes à l'étranger."
+        "Vérifie les conventions de double imposition."
       ].map(t=>`<div class="tax-tip"><div style="color:var(--green)">✓</div><div>${t}</div></div>`).join('')}
     </div>
 
     <div class="section-title">Données</div>
-    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="exportData()">Exporter JSON</button>
-    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="document.getElementById('importFile').click()">Importer JSON</button>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-    <button class="btn btn-danger" onclick="if(confirm('Tout effacer ?')){localStorage.removeItem(STORAGE_KEY);location.reload()}">Réinitialiser</button>
+    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="exportData()">Exporter les données (JSON)</button>
+    <button class="btn btn-secondary" style="margin-bottom:8px" onclick="document.getElementById('imp').click()">Importer des données</button>
+    <input type="file" id="imp" accept=".json" hidden onchange="importData(event)">
+    <button class="btn btn-danger" onclick="if(confirm('Tout supprimer définitivement ?')){localStorage.removeItem(KEY);location.reload()}">Réinitialiser l'application</button>
   `;
 }
 
-// ================= MODALS & CRUD =================
-function openModal(html) {
-  document.getElementById('modal-content').innerHTML = html;
-  document.getElementById('modal').classList.add('show');
-}
-function closeModal() { document.getElementById('modal').classList.remove('show'); }
+// ========== MODALS ==========
+function $(id){ return document.getElementById(id); }
+function openModal(html){ $('modalBody').innerHTML=html; $('modal').classList.add('show'); }
+function closeModal(){ $('modal').classList.remove('show'); }
 
-function openAddTransaction() {
+function openAddTx(){
   openModal(`
     <div class="modal-header"><h2>Nouvelle transaction</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Montant</label><input type="number" id="tx-a" step="0.05"></div>
-    <div class="segmented"><button class="active" id="tx-e" onclick="window._exp=true;this.classList.add('active');document.getElementById('tx-i').classList.remove('active')">Dépense</button>
-    <button id="tx-i" onclick="window._exp=false;this.classList.add('active');document.getElementById('tx-e').classList.remove('active')">Revenu</button></div>
-    <div class="form-group"><label>Catégorie</label><select id="tx-c"><option>Alimentation</option><option>Transport</option><option>Logement</option><option>Santé</option><option>Loisirs</option><option>Shopping</option><option>Restaurants</option><option>Abonnements</option><option>Salaire</option><option>Autre</option></select></div>
-    <div class="form-group"><label>Marchand</label><input id="tx-m" placeholder="Ex: Migros"></div>
-    <div class="form-group"><label>Date</label><input type="date" id="tx-d" value="${new Date().toISOString().slice(0,10)}"></div>
-    <button class="btn" onclick="saveTransaction()">Ajouter</button>`);
-  window._exp = true;
+    <div class="form-group"><label>Montant (CHF)</label><input type="number" id="f-amount" step="0.05"></div>
+    <div class="segmented">
+      <button class="active" id="btnExp" onclick="setType(true)">Dépense</button>
+      <button id="btnInc" onclick="setType(false)">Revenu</button>
+    </div>
+    <div class="form-group"><label>Catégorie</label>
+      <select id="f-cat"><option>Alimentation</option><option>Transport</option><option>Logement</option><option>Santé</option><option>Loisirs</option><option>Shopping</option><option>Restaurants</option><option>Abonnements</option><option>Salaire</option><option>Autre</option></select>
+    </div>
+    <div class="form-group"><label>Marchand</label><input id="f-merch" placeholder="Ex: Migros"></div>
+    <div class="form-group"><label>Date</label><input type="date" id="f-date" value="${new Date().toISOString().slice(0,10)}"></div>
+    <button class="btn" onclick="saveTx()">Ajouter</button>`);
+  window.isExp = true;
 }
-function saveTransaction(id) {
-  const amount = +document.getElementById('tx-a').value;
-  if (!amount) return alert('Montant requis');
-  const obj = {amount, category:document.getElementById('tx-c').value, merchant:document.getElementById('tx-m').value, isExpense:window._exp!==false, date:document.getElementById('tx-d').value};
-  if (id) {
+function setType(exp){
+  window.isExp = exp;
+  $('btnExp').classList.toggle('active',exp);
+  $('btnInc').classList.toggle('active',!exp);
+}
+function saveTx(id){
+  const amount = +$('f-amount').value;
+  if(!amount||amount<=0) return alert('Montant invalide');
+  const obj = {amount, category:$('f-cat').value, merchant:$('f-merch').value, isExpense:window.isExp!==false, date:$('f-date').value};
+  if(id){
     const t = data.transactions.find(x=>x.id===id);
-    Object.assign(t, obj);
+    Object.assign(t,obj);
   } else {
     obj.id = uid();
     data.transactions.push(obj);
   }
-  saveData(); updateBudgetsSpent(); closeModal();
-  renderPage(document.querySelector('.page.active').id.replace('page-',''));
+  save(); updateBudgets(); closeModal();
+  render(document.querySelector('.page.active').id.replace('page-',''));
 }
-function editTransaction(id) {
+function editTx(id){
   const t = data.transactions.find(x=>x.id===id);
-  if (!t) return;
-  window._exp = t.isExpense;
+  if(!t) return;
+  window.isExp = t.isExpense;
   openModal(`
-    <div class="modal-header"><h2>Modifier transaction</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Montant</label><input type="number" id="tx-a" value="${t.amount}" step="0.05"></div>
-    <div class="segmented"><button class="${t.isExpense?'active':''}" id="tx-e" onclick="window._exp=true;this.classList.add('active');document.getElementById('tx-i').classList.remove('active')">Dépense</button>
-    <button class="${!t.isExpense?'active':''}" id="tx-i" onclick="window._exp=false;this.classList.add('active');document.getElementById('tx-e').classList.remove('active')">Revenu</button></div>
-    <div class="form-group"><label>Catégorie</label><select id="tx-c"><option ${t.category==='Alimentation'?'selected':''}>Alimentation</option><option ${t.category==='Transport'?'selected':''}>Transport</option><option ${t.category==='Logement'?'selected':''}>Logement</option><option ${t.category==='Santé'?'selected':''}>Santé</option><option ${t.category==='Loisirs'?'selected':''}>Loisirs</option><option ${t.category==='Shopping'?'selected':''}>Shopping</option><option ${t.category==='Restaurants'?'selected':''}>Restaurants</option><option ${t.category==='Abonnements'?'selected':''}>Abonnements</option><option ${t.category==='Salaire'?'selected':''}>Salaire</option><option ${t.category==='Autre'?'selected':''}>Autre</option></select></div>
-    <div class="form-group"><label>Marchand</label><input id="tx-m" value="${t.merchant||''}"></div>
-    <div class="form-group"><label>Date</label><input type="date" id="tx-d" value="${t.date}"></div>
+    <div class="modal-header"><h2>Modifier</h2><button class="close-btn" onclick="closeModal()">×</button></div>
+    <div class="form-group"><label>Montant</label><input type="number" id="f-amount" value="${t.amount}" step="0.05"></div>
+    <div class="segmented">
+      <button class="${t.isExpense?'active':''}" id="btnExp" onclick="setType(true)">Dépense</button>
+      <button class="${!t.isExpense?'active':''}" id="btnInc" onclick="setType(false)">Revenu</button>
+    </div>
+    <div class="form-group"><label>Catégorie</label>
+      <select id="f-cat">
+        ${['Alimentation','Transport','Logement','Santé','Loisirs','Shopping','Restaurants','Abonnements','Salaire','Autre'].map(c=>`<option ${c===t.category?'selected':''}>${c}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group"><label>Marchand</label><input id="f-merch" value="${t.merchant||''}"></div>
+    <div class="form-group"><label>Date</label><input type="date" id="f-date" value="${t.date}"></div>
     <div class="action-btns">
-      <button class="btn btn-danger" onclick="deleteTransaction(${id})">Supprimer</button>
-      <button class="btn" onclick="saveTransaction(${id})">Enregistrer</button>
+      <button class="btn btn-danger" onclick="delTx(${id})">Supprimer</button>
+      <button class="btn" onclick="saveTx(${id})">Enregistrer</button>
     </div>`);
 }
-function deleteTransaction(id) {
-  if (!confirm('Supprimer cette transaction ?')) return;
+function delTx(id){
+  if(!confirm('Supprimer cette transaction ?')) return;
   data.transactions = data.transactions.filter(t=>t.id!==id);
-  saveData(); updateBudgetsSpent(); closeModal();
-  renderPage(document.querySelector('.page.active').id.replace('page-',''));
+  save(); updateBudgets(); closeModal();
+  render(document.querySelector('.page.active').id.replace('page-',''));
 }
 
-function openAddAccount() {
+function openAddAccount(){
   openModal(`
     <div class="modal-header"><h2>Nouveau compte</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Nom</label><input id="acc-n"></div>
-    <div class="form-group"><label>Institution</label><input id="acc-i"></div>
-    <div class="form-group"><label>Type</label><select id="acc-t"><option>Banque</option><option>Crypto</option><option>Investissement</option><option>Pension</option><option>Espèces</option></select></div>
-    <div class="form-group"><label>Solde</label><input type="number" id="acc-b" value="0"></div>
+    <div class="form-group"><label>Nom</label><input id="a-name"></div>
+    <div class="form-group"><label>Institution</label><input id="a-inst"></div>
+    <div class="form-group"><label>Type</label><select id="a-type"><option>Banque</option><option>Crypto</option><option>Investissement</option><option>Pension</option><option>Espèces</option></select></div>
+    <div class="form-group"><label>Solde (CHF)</label><input type="number" id="a-bal" value="0"></div>
     <button class="btn" onclick="saveAccount()">Créer</button>`);
 }
-function saveAccount(id) {
-  const name = document.getElementById('acc-n').value.trim();
-  if (!name) return alert('Nom requis');
-  const obj = {name, institution:document.getElementById('acc-i').value, type:document.getElementById('acc-t').value, balance:+document.getElementById('acc-b').value||0};
-  if (id) Object.assign(data.accounts.find(a=>a.id===id), obj);
+function saveAccount(id){
+  const name = $('a-name').value.trim();
+  if(!name) return alert('Nom obligatoire');
+  const obj = {name, institution:$('a-inst').value, type:$('a-type').value, balance:+$('a-bal').value||0};
+  if(id) Object.assign(data.accounts.find(a=>a.id===id),obj);
   else { obj.id=uid(); data.accounts.push(obj); }
-  saveData(); closeModal(); renderMore();
+  save(); closeModal(); renderMore();
 }
-function editAccount(id) {
+function editAccount(id){
   const a = data.accounts.find(x=>x.id===id);
   openModal(`
     <div class="modal-header"><h2>Modifier compte</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Nom</label><input id="acc-n" value="${a.name}"></div>
-    <div class="form-group"><label>Institution</label><input id="acc-i" value="${a.institution||''}"></div>
-    <div class="form-group"><label>Type</label><select id="acc-t"><option ${a.type==='Banque'?'selected':''}>Banque</option><option ${a.type==='Crypto'?'selected':''}>Crypto</option><option ${a.type==='Investissement'?'selected':''}>Investissement</option><option ${a.type==='Pension'?'selected':''}>Pension</option><option ${a.type==='Espèces'?'selected':''}>Espèces</option></select></div>
-    <div class="form-group"><label>Solde</label><input type="number" id="acc-b" value="${a.balance}"></div>
-    <div class="action-btns"><button class="btn btn-danger" onclick="deleteAccount(${id})">Supprimer</button><button class="btn" onclick="saveAccount(${id})">Enregistrer</button></div>`);
+    <div class="form-group"><label>Nom</label><input id="a-name" value="${a.name}"></div>
+    <div class="form-group"><label>Institution</label><input id="a-inst" value="${a.institution||''}"></div>
+    <div class="form-group"><label>Type</label><select id="a-type">
+      ${['Banque','Crypto','Investissement','Pension','Espèces'].map(t=>`<option ${t===a.type?'selected':''}>${t}</option>`).join('')}
+    </select></div>
+    <div class="form-group"><label>Solde</label><input type="number" id="a-bal" value="${a.balance}"></div>
+    <div class="action-btns">
+      <button class="btn btn-danger" onclick="delAccount(${id})">Supprimer</button>
+      <button class="btn" onclick="saveAccount(${id})">Enregistrer</button>
+    </div>`);
 }
-function deleteAccount(id) {
-  if (!confirm('Supprimer ce compte ?')) return;
+function delAccount(id){
+  if(!confirm('Supprimer ce compte ?')) return;
   data.accounts = data.accounts.filter(a=>a.id!==id);
-  saveData(); closeModal(); renderMore();
+  save(); closeModal(); renderMore();
 }
 
-function openAddBudget() {
+function openAddBudget(){
   openModal(`
     <div class="modal-header"><h2>Nouveau budget</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Catégorie</label><select id="bud-c"><option>Alimentation</option><option>Transport</option><option>Loisirs</option><option>Shopping</option><option>Restaurants</option><option>Abonnements</option><option>Santé</option><option>Autre</option></select></div>
-    <div class="form-group"><label>Limite mensuelle</label><input type="number" id="bud-l" value="500"></div>
+    <div class="form-group"><label>Catégorie</label><select id="b-cat"><option>Alimentation</option><option>Transport</option><option>Loisirs</option><option>Shopping</option><option>Restaurants</option><option>Abonnements</option><option>Santé</option><option>Autre</option></select></div>
+    <div class="form-group"><label>Limite mensuelle</label><input type="number" id="b-lim" value="500"></div>
     <button class="btn" onclick="saveBudget()">Créer</button>`);
 }
-function saveBudget(id) {
-  const obj = {category:document.getElementById('bud-c').value, limit:+document.getElementById('bud-l').value||0};
-  if (id) Object.assign(data.budgets.find(b=>b.id===id), obj);
+function saveBudget(id){
+  const obj = {category:$('b-cat').value, limit:+$('b-lim').value||0};
+  if(id) Object.assign(data.budgets.find(b=>b.id===id),obj);
   else { obj.id=uid(); data.budgets.push(obj); }
-  saveData(); updateBudgetsSpent(); closeModal(); renderPlanning();
+  save(); updateBudgets(); closeModal(); renderPlan();
 }
-function editBudget(id) {
+function editBudget(id){
   const b = data.budgets.find(x=>x.id===id);
   openModal(`
     <div class="modal-header"><h2>Modifier budget</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Catégorie</label><input id="bud-c" value="${b.category}"></div>
-    <div class="form-group"><label>Limite</label><input type="number" id="bud-l" value="${b.limit}"></div>
-    <div class="action-btns"><button class="btn btn-danger" onclick="deleteBudget(${id})">Supprimer</button><button class="btn" onclick="saveBudget(${id})">Enregistrer</button></div>`);
+    <div class="form-group"><label>Catégorie</label><input id="b-cat" value="${b.category}"></div>
+    <div class="form-group"><label>Limite</label><input type="number" id="b-lim" value="${b.limit}"></div>
+    <div class="action-btns">
+      <button class="btn btn-danger" onclick="delBudget(${id})">Supprimer</button>
+      <button class="btn" onclick="saveBudget(${id})">Enregistrer</button>
+    </div>`);
 }
-function deleteBudget(id) {
-  if (!confirm('Supprimer ?')) return;
+function delBudget(id){
+  if(!confirm('Supprimer ce budget ?')) return;
   data.budgets = data.budgets.filter(b=>b.id!==id);
-  saveData(); closeModal(); renderPlanning();
+  save(); closeModal(); renderPlan();
 }
 
-function openAddGoal() {
+function openAddGoal(){
   openModal(`
     <div class="modal-header"><h2>Nouvel objectif</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Nom</label><input id="goal-n"></div>
-    <div class="form-group"><label>Cible</label><input type="number" id="goal-t" value="5000"></div>
-    <div class="form-group"><label>Déjà épargné</label><input type="number" id="goal-c" value="0"></div>
+    <div class="form-group"><label>Nom</label><input id="g-name"></div>
+    <div class="form-group"><label>Montant cible</label><input type="number" id="g-target" value="5000"></div>
+    <div class="form-group"><label>Déjà épargné</label><input type="number" id="g-cur" value="0"></div>
     <button class="btn" onclick="saveGoal()">Créer</button>`);
 }
-function saveGoal(id) {
-  const name = document.getElementById('goal-n').value.trim();
-  if (!name) return alert('Nom requis');
-  const obj = {name, target:+document.getElementById('goal-t').value||0, current:+document.getElementById('goal-c').value||0, icon:'🎯'};
-  if (id) Object.assign(data.goals.find(g=>g.id===id), obj);
+function saveGoal(id){
+  const name = $('g-name').value.trim();
+  if(!name) return alert('Nom obligatoire');
+  const obj = {name, target:+$('g-target').value||0, current:+$('g-cur').value||0, icon:'🎯'};
+  if(id) Object.assign(data.goals.find(g=>g.id===id),obj);
   else { obj.id=uid(); data.goals.push(obj); }
-  saveData(); closeModal(); renderPlanning();
+  save(); closeModal(); renderPlan();
 }
-function editGoal(id) {
+function editGoal(id){
   const g = data.goals.find(x=>x.id===id);
   openModal(`
     <div class="modal-header"><h2>Modifier objectif</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Nom</label><input id="goal-n" value="${g.name}"></div>
-    <div class="form-group"><label>Cible</label><input type="number" id="goal-t" value="${g.target}"></div>
-    <div class="form-group"><label>Actuel</label><input type="number" id="goal-c" value="${g.current}"></div>
-    <div class="action-btns"><button class="btn btn-danger" onclick="deleteGoal(${id})">Supprimer</button><button class="btn" onclick="saveGoal(${id})">Enregistrer</button></div>`);
+    <div class="form-group"><label>Nom</label><input id="g-name" value="${g.name}"></div>
+    <div class="form-group"><label>Cible</label><input type="number" id="g-target" value="${g.target}"></div>
+    <div class="form-group"><label>Actuel</label><input type="number" id="g-cur" value="${g.current}"></div>
+    <div class="action-btns">
+      <button class="btn btn-danger" onclick="delGoal(${id})">Supprimer</button>
+      <button class="btn" onclick="saveGoal(${id})">Enregistrer</button>
+    </div>`);
 }
-function deleteGoal(id) {
-  if (!confirm('Supprimer ?')) return;
+function delGoal(id){
+  if(!confirm('Supprimer cet objectif ?')) return;
   data.goals = data.goals.filter(g=>g.id!==id);
-  saveData(); closeModal(); renderPlanning();
+  save(); closeModal(); renderPlan();
 }
 
-function openAddSub() {
+function openAddSub(){
   openModal(`
     <div class="modal-header"><h2>Nouvel abonnement</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Nom</label><input id="sub-n"></div>
-    <div class="form-group"><label>Montant</label><input type="number" id="sub-a" step="0.05"></div>
-    <div class="form-group"><label>Fréquence</label><select id="sub-f"><option value="monthly">Mensuel</option><option value="yearly">Annuel</option></select></div>
+    <div class="form-group"><label>Nom</label><input id="s-name"></div>
+    <div class="form-group"><label>Montant</label><input type="number" id="s-amount" step="0.05"></div>
+    <div class="form-group"><label>Fréquence</label><select id="s-freq"><option value="monthly">Mensuel</option><option value="yearly">Annuel</option></select></div>
     <button class="btn" onclick="saveSub()">Ajouter</button>`);
 }
-function saveSub(id) {
-  const name = document.getElementById('sub-n').value.trim();
-  if (!name) return alert('Nom requis');
-  const obj = {name, amount:+document.getElementById('sub-a').value||0, frequency:document.getElementById('sub-f').value};
-  if (id) Object.assign(data.subscriptions.find(s=>s.id===id), obj);
+function saveSub(id){
+  const name = $('s-name').value.trim();
+  if(!name) return alert('Nom obligatoire');
+  const obj = {name, amount:+$('s-amount').value||0, frequency:$('s-freq').value};
+  if(id) Object.assign(data.subscriptions.find(s=>s.id===id),obj);
   else { obj.id=uid(); data.subscriptions.push(obj); }
-  saveData(); closeModal(); renderMore();
+  save(); closeModal(); renderMore();
 }
-function editSub(id) {
+function editSub(id){
   const s = data.subscriptions.find(x=>x.id===id);
   openModal(`
     <div class="modal-header"><h2>Modifier abonnement</h2><button class="close-btn" onclick="closeModal()">×</button></div>
-    <div class="form-group"><label>Nom</label><input id="sub-n" value="${s.name}"></div>
-    <div class="form-group"><label>Montant</label><input type="number" id="sub-a" value="${s.amount}" step="0.05"></div>
-    <div class="form-group"><label>Fréquence</label><select id="sub-f"><option value="monthly" ${s.frequency==='monthly'?'selected':''}>Mensuel</option><option value="yearly" ${s.frequency==='yearly'?'selected':''}>Annuel</option></select></div>
-    <div class="action-btns"><button class="btn btn-danger" onclick="deleteSub(${id})">Supprimer</button><button class="btn" onclick="saveSub(${id})">Enregistrer</button></div>`);
+    <div class="form-group"><label>Nom</label><input id="s-name" value="${s.name}"></div>
+    <div class="form-group"><label>Montant</label><input type="number" id="s-amount" value="${s.amount}" step="0.05"></div>
+    <div class="form-group"><label>Fréquence</label><select id="s-freq"><option value="monthly" ${s.frequency==='monthly'?'selected':''}>Mensuel</option><option value="yearly" ${s.frequency==='yearly'?'selected':''}>Annuel</option></select></div>
+    <div class="action-btns">
+      <button class="btn btn-danger" onclick="delSub(${id})">Supprimer</button>
+      <button class="btn" onclick="saveSub(${id})">Enregistrer</button>
+    </div>`);
 }
-function deleteSub(id) {
-  if (!confirm('Supprimer ?')) return;
+function delSub(id){
+  if(!confirm('Supprimer cet abonnement ?')) return;
   data.subscriptions = data.subscriptions.filter(s=>s.id!==id);
-  saveData(); closeModal(); renderMore();
+  save(); closeModal(); renderMore();
 }
 
-function exportData() {
+function exportData(){
   const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='swisswealth-backup.json'; a.click();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'swisswealth-backup.json';
+  a.click();
 }
-function importData(e) {
+function importData(e){
   const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      data = JSON.parse(ev.target.result);
-      saveData(); location.reload();
-    } catch(err) { alert('Fichier invalide'); }
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = ev=>{
+    try{ data=JSON.parse(ev.target.result); save(); location.reload(); }
+    catch(err){ alert('Fichier invalide'); }
   };
-  reader.readAsText(file);
+  r.readAsText(file);
 }
 
-// INIT
-loadData();
-renderDashboard();
+// START
+load();
+renderDash();
 </script>
 </body>
 </html>
