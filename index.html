@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0A84FF">
+    <title>SwissWealth</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #000000;
+            --card: #1C1C1E;
+            --card2: #2C2C2E;
+            --text: #FFFFFF;
+            --text2: #8E8E93;
+            --blue: #0A84FF;
+            --green: #30D158;
+            --red: #FF453A;
+            --orange: #FF9F0A;
+            --purple: #BF5AF2;
+            --yellow: #FFD60A;
+            --radius: 16px;
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-top: var(--safe-top);
+            padding-bottom: calc(80px + var(--safe-bottom));
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-sub {
+            font-size: 13px;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(28,28,30,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 calc(10px + var(--safe-bottom));
+            border-top: 1px solid rgba(255,255,255,0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text2);
+            font-size: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px 12px;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--blue);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            color: var(--text2);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .big-number {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .row .card {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:active {
+            opacity: 0.7;
+        }
+
+        .btn-secondary {
+            background: var(--card2);
+        }
+
+        .btn-danger {
+            background: var(--red);
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 14px;
+            border-radius: 10px;
+            width: auto;
+        }
+
+        /* Lists */
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .icon-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-sub {
+            font-size: 13px;
+            color: var(--text2);
+            margin-top: 2px;
+        }
+
+        .item-amount {
+            font-weight: 600;
+            font-size: 16px;
+            text-align: right;
+        }
+
+        .amount-expense { color: var(--red); }
+        .amount-income { color: var(--green); }
+
+        /* Progress */
+        .progress-bar {
+            height: 8px;
+            background: var(--card2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text2);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            background: var(--card2);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text);
+            font-size: 16px;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            box-shadow: 0 0 0 2px var(--blue);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px 20px 0 0;
+            padding: 24px 20px calc(24px + var(--safe-bottom));
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: var(--card2);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: var(--text);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Segmented control */
+        .segmented {
+            display: flex;
+            background: var(--card2);
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 16px;
+        }
+
+        .segmented button {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text2);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .segmented button.active {
+            background: var(--card);
+            color: var(--text);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Insight */
+        .insight {
+            background: rgba(255, 214, 10, 0.12);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .insight-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: 220px;
+            margin: 10px 0;
+        }
+
+        /* Empty state */
+        .empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text2);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            background: var(--card2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text2);
+        }
+
+        /* Simulator result */
+        .sim-result {
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(10,132,255,0.2), rgba(48,209,88,0.2));
+            border-radius: var(--radius);
+            margin-top: 16px;
+        }
+
+        .sim-result .big-number {
+            color: var(--green);
+        }
+
+        /* Tax tip */
+        .tax-tip {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .tax-tip:last-child {
+            border-bottom: none;
+        }
+
+        /* Floating add button */
+        .fab {
+            position: fixed;
+            right: 20px;
+            bottom: calc(90px + var(--safe-bottom));
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--blue);
+            color: white;
+            border: none;
+            font-size: 28px;
+            box-shadow: 0 4px 20px rgba(10,132,255,0.4);
+            cursor: pointer;
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 20px 0 12px;
+        }
+
+        .positive { color: var(--green); }
+        .negative { color: var(--red); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>SwissWealth</h1>
+        <div class="header-sub">Gestion financière intelligente 🇨🇭</div>
+    </div>
+
+    <!-- Pages -->
+    <div id="page-dashboard" class="page active"></div>
+    <div id="page-transactions" class="page"></div>
+    <div id="page-analytics" class="page"></div>
+    <div id="page-planning" class="page"></div>
+    <div id="page-more" class="page"></div>
+
+    <!-- Floating Add Button -->
+    <button class="fab" onclick="openModal('transaction')">+</button>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <button class="nav-item active" onclick="showPage('dashboard')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Dashboard
+        </button>
+        <button class="nav-item" onclick="showPage('transactions')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+            Transactions
+        </button>
+        <button class="nav-item" onclick="showPage('analytics')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+            Analytics
+        </button>
+        <button class="nav-item" onclick="showPage('planning')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            Planning
+        </button>
+        <button class="nav-item" onclick="showPage('more')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            Plus
+        </button>
+    </nav>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal" id="modal-content"></div>
+    </div>
+
+    <script>
+        // ===================== DATA =====================
+        const STORAGE_KEY = 'swisswealth_data_v1';
+
+        let data = {
+            accounts: [],
+            transactions: [],
+            budgets: [],
+            goals: [],
+            subscriptions: []
+        };
+
+        function loadData() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                data = JSON.parse(saved);
+            } else {
+                // Données de démo
+                data = {
+                    accounts: [
+                        { id: 1, name: 'Compte UBS', type: 'Banque', balance: 12450, currency: 'CHF', institution: 'UBS' },
+                        { id: 2, name: 'PostFinance', type: 'Banque', balance: 3200, currency: 'CHF', institution: 'PostFinance' },
+                        { id: 3, name: 'Binance', type: 'Crypto', balance: 8700, currency: 'CHF', institution: 'Binance' },
+                        { id: 4, name: '3e pilier A', type: 'Pension', balance: 45000, currency: 'CHF', institution: 'Swiss Life' }
+                    ],
+                    transactions: [
+                        { id: 1, amount: 4200, category: 'Salaire', merchant: 'Tech SA', isExpense: false, date: '2026-09-28', note: '' },
+                        { id: 2, amount: 85, category: 'Alimentation', merchant: 'Migros', isExpense: true, date: '2026-09-30', note: '' },
+                        { id: 3, amount: 12.50, category: 'Transport', merchant: 'CFF', isExpense: true, date: '2026-10-01', note: '' },
+                        { id: 4, amount: 49, category: 'Abonnements', merchant: 'Netflix', isExpense: true, date: '2026-09-15', note: '' },
+                        { id: 5, amount: 120, category: 'Restaurants', merchant: 'Le Jardin', isExpense: true, date: '2026-09-29', note: '' },
+                        { id: 6, amount: 890, category: 'Logement', merchant: 'Loyer', isExpense: true, date: '2026-09-01', note: '' },
+                        { id: 7, amount: 250, category: 'Shopping', merchant: 'Zalando', isExpense: true, date: '2026-09-22', note: '' },
+                        { id: 8, amount: 60, category: 'Alimentation', merchant: 'Coop', isExpense: true, date: '2026-10-01', note: '' },
+                        { id: 9, amount: 35, category: 'Santé', merchant: 'Pharmacie', isExpense: true, date: '2026-09-18', note: '' },
+                        { id: 10, amount: 15, category: 'Loisirs', merchant: 'Cinéma', isExpense: true, date: '2026-09-25', note: '' }
+                    ],
+                    budgets: [
+                        { id: 1, category: 'Alimentation', limit: 600, spent: 145 },
+                        { id: 2, category: 'Restaurants', limit: 300, spent: 120 },
+                        { id: 3, category: 'Loisirs', limit: 200, spent: 15 }
+                    ],
+                    goals: [
+                        { id: 1, name: 'Fonds d\'urgence', target: 20000, current: 8500, icon: '🛡️' },
+                        { id: 2, name: 'Vacances Japon 2027', target: 6000, current: 1200, icon: '✈️' },
+                        { id: 3, name: 'Apport logement', target: 80000, current: 32000, icon: '🏠' }
+                    ],
+                    subscriptions: [
+                        { id: 1, name: 'Netflix', amount: 19.90, frequency: 'monthly' },
+                        { id: 2, name: 'Spotify', amount: 12.90, frequency: 'monthly' },
+                        { id: 3, name: 'iCloud+', amount: 2.95, frequency: 'monthly' },
+                        { id: 4, name: 'Fitness Park', amount: 59, frequency: 'monthly' },
+                        { id: 5, name: 'CFF AG', amount: 3860, frequency: 'yearly' }
+                    ]
+                };
+                saveData();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // ===================== UTILS =====================
+        function formatCHF(n) {
+            return new Intl.NumberFormat('fr-CH', { style: 'currency', currency: 'CHF' }).format(n);
+        }
+
+        function formatDate(d) {
+            return new Date(d).toLocaleDateString('fr-CH', { day: 'numeric', month: 'short' });
+        }
+
+        function uid() {
+            return Date.now() + Math.random();
+        }
+
+        function totalBalance() {
+            return data.accounts.reduce((s, a) => s + a.balance, 0);
+        }
+
+        function monthlyIncome() {
+            const now = new Date();
+            return data.transactions
+                .filter(t => !t.isExpense && new Date(t.date).getMonth() === now.getMonth())
+                .reduce((s, t) => s + t.amount, 0);
+        }
+
+        function monthlyExpenses() {
+            const now = new Date();
+            return data.transactions
+                .filter(t => t.isExpense && new Date(t.date).getMonth() === now.getMonth())
+                .reduce((s, t) => s + t.amount, 0);
+        }
+
+        function totalSubscriptionsMonthly() {
+            return data.subscriptions.reduce((s, sub) => {
+                return s + (sub.frequency === 'yearly' ? sub.amount / 12 : sub.amount);
+            }, 0);
+        }
+
+        // ===================== NAVIGATION =====================
+        function showPage(name) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById('page-' + name).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            // Hide FAB on some pages
+            document.querySelector('.fab').style.display = (name === 'dashboard' || name === 'transactions') ? 'flex' : 'none';
+            
+            renderPage(name);
+        }
+
+        function renderPage(name) {
+            switch(name) {
+                case 'dashboard': renderDashboard(); break;
+                case 'transactions': renderTransactions(); break;
+                case 'analytics': renderAnalytics(); break;
+                case 'planning': renderPlanning(); break;
+                case 'more': renderMore(); break;
+            }
+        }
+
+        // ===================== DASHBOARD =====================
+        function renderDashboard() {
+            const income = monthlyIncome();
+            const expenses = monthlyExpenses();
+            const balance = totalBalance();
+            const savingsRate = income > 0 ? Math.round(((income - expenses) / income) * 100) : 0;
+
+            let insights = [];
+            if (savingsRate < 20 && income > 0) insights.push(`Ton taux d'épargne est de ${savingsRate}%. Vise au moins 20%.`);
+            else if (savingsRate >= 20) insights.push(`Excellent ! Tu épargnes ${savingsRate}% de tes revenus.`);
+            
+            const subs = totalSubscriptionsMonthly();
+            if (subs > 100) insights.push(`Tes abonnements coûtent ${formatCHF(subs)}/mois. Vérifie s'il y en a d'inutiles.`);
+            
+            insights.push(`Ton patrimoine net s'élève à ${formatCHF(balance)}.`);
+
+            const recent = [...data.transactions].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+
+            document.getElementById('page-dashboard').innerHTML = `
+                <div class="card" style="text-align:center;">
+                    <div class="card-title">Patrimoine net</div>
+                    <div class="big-number">${formatCHF(balance)}</div>
+                </div>
+
+                <div class="row">
+                    <div class="card">
+                        <div class="card-title">Revenus</div>
+                        <div style="font-size:20px;font-weight:700;color:var(--green)">${formatCHF(income)}</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Dépenses</div>
+                        <div style="font-size:20px;font-weight:700;color:var(--red)">${formatCHF(expenses)}</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Insights intelligents</div>
+                ${insights.map(i => `
+                    <div class="insight">
+                        <div class="insight-icon">💡</div>
+                        <div style="font-size:14px;line-height:1.4">${i}</div>
+                    </div>
+                `).join('')}
+
+                <div class="section-title">Objectifs</div>
+                ${data.goals.slice(0,3).map(g => {
+                    const pct = Math.min(100, Math.round((g.current / g.target) * 100));
+                    return `
+                        <div class="card">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <span style="font-weight:600">${g.icon} ${g.name}</span>
+                                <span style="font-weight:700">${pct}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width:${pct}%;background:var(--orange)"></div>
+                            </div>
+                            <div style="font-size:13px;color:var(--text2);margin-top:4px">
+                                ${formatCHF(g.current)} / ${formatCHF(g.target)}
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+
+                <div class="section-title">Dernières transactions</div>
+                <div class="card" style="padding:8px 18px;">
+                    ${recent.map(t => `
+                        <div class="list-item">
+                            <div class="icon-circle" style="background:${t.isExpense ? 'rgba(255,69,58,0.15)' : 'rgba(48,209,88,0.15)'}">
+                                ${t.isExpense ? '↑' : '↓'}
+                            </div>
+                            <div class="item-info">
+                                <div class="item-title">${t.merchant || t.category}</div>
+                                <div class="item-sub">${t.category} · ${formatDate(t.date)}</div>
+                            </div>
+                            <div class="item-amount ${t.isExpense ? 'amount-expense' : 'amount-income'}">
+                                ${t.isExpense ? '-' : '+'}${formatCHF(t.amount)}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // ===================== TRANSACTIONS =====================
+        function renderTransactions() {
+            const sorted = [...data.transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            document.getElementById('page-transactions').innerHTML = `
+                <div class="card" style="padding:8px 18px;">
+                    ${sorted.length === 0 ? `
+                        <div class="empty">
+                            <div class="empty-icon">📭</div>
+                            <div>Aucune transaction</div>
+                        </div>
+                    ` : sorted.map(t => `
+                        <div class="list-item">
+                            <div class="icon-circle" style="background:${t.isExpense ? 'rgba(255,69,58,0.15)' : 'rgba(48,209,88,0.15)'}">
+                                ${t.isExpense ? '↑' : '↓'}
+                            </div>
+                            <div class="item-info">
+                                <div class="item-title">${t.merchant || t.category}</div>
+                                <div class="item-sub">${t.category} · ${formatDate(t.date)}</div>
+                            </div>
+                            <div class="item-amount ${t.isExpense ? 'amount-expense' : 'amount-income'}">
+                                ${t.isExpense ? '-' : '+'}${formatCHF(t.amount)}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // ===================== ANALYTICS =====================
+        function renderAnalytics() {
+            const expenses = data.transactions.filter(t => t.isExpense);
+            const byCat = {};
+            expenses.forEach(t => {
+                byCat[t.category] = (byCat[t.category] || 0) + t.amount;
+            });
+            const catData = Object.entries(byCat).sort((a,b) => b[1] - a[1]);
+
+            const income = monthlyIncome();
+            const exp = monthlyExpenses();
+
+            document.getElementById('page-analytics').innerHTML = `
+                <div class="row">
+                    <div class="card">
+                        <div class="card-title">Revenus</div>
+                        <div style="font-size:18px;font-weight:700;color:var(--green)">${formatCHF(income)}</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Dépenses</div>
+                        <div style="font-size:18px;font-weight:700;color:var(--red)">${formatCHF(exp)}</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Solde</div>
+                        <div style="font-size:18px;font-weight:700;color:${income-exp>=0?'var(--green)':'var(--red)'}">${formatCHF(income-exp)}</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Dépenses par catégorie</div>
+                    <div class="chart-container">
+                        <canvas id="catChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card" style="padding:8px 18px;">
+                    ${catData.map(([cat, amount]) => `
+                        <div class="list-item">
+                            <div class="item-info">
+                                <div class="item-title">${cat}</div>
+                            </div>
+                            <div class="item-amount">${formatCHF(amount)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Chart
+            setTimeout(() => {
+                const ctx = document.getElementById('catChart');
+                if (!ctx) return;
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: catData.map(c => c[0]),
+                        datasets: [{
+                            data: catData.map(c => c[1]),
+                            backgroundColor: ['#0A84FF','#30D158','#FF9F0A','#FF453A','#BF5AF2','#64D2FF','#FFD60A','#AC8E68'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#8E8E93', boxWidth: 12, padding: 12 } }
+                        }
+                    }
+                });
+            }, 50);
+        }
+
+        // ===================== PLANNING =====================
+        function renderPlanning() {
+            document.getElementById('page-planning').innerHTML = `
+                <div class="section-title">Budgets</div>
+                ${data.budgets.map(b => {
+                    const pct = Math.min(100, Math.round((b.spent / b.limit) * 100));
+                    const color = pct > 90 ? 'var(--red)' : 'var(--green)';
+                    return `
+                        <div class="card">
+                            <div style="display:flex;justify-content:space-between;">
+                                <span style="font-weight:600">${b.category}</span>
+                                <span style="font-size:13px;color:var(--text2)">${formatCHF(b.spent)} / ${formatCHF(b.limit)}</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width:${pct}%;background:${color}"></div>
+                            </div>
+                            <div style="font-size:13px;color:var(--text2)">Reste : ${formatCHF(Math.max(0, b.limit - b.spent))}</div>
+                        </div>
+                    `;
+                }).join('')}
+                <button class="btn btn-secondary" style="margin-bottom:20px" onclick="openModal('budget')">+ Ajouter un budget</button>
+
+                <div class="section-title">Objectifs d'épargne</div>
+                ${data.goals.map(g => {
+                    const pct = Math.min(100, Math.round((g.current / g.target) * 100));
+                    return `
+                        <div class="card">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <span style="font-weight:600">${g.icon} ${g.name}</span>
+                                <span style="font-weight:700;color:var(--orange)">${pct}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width:${pct}%;background:var(--orange)"></div>
+                            </div>
+                            <div style="font-size:13px;color:var(--text2)">${formatCHF(g.current)} / ${formatCHF(g.target)}</div>
+                        </div>
+                    `;
+                }).join('')}
+                <button class="btn btn-secondary" style="margin-bottom:20px" onclick="openModal('goal')">+ Ajouter un objectif</button>
+
+                <div class="section-title">Simulateur de patrimoine</div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>Épargne actuelle (CHF)</label>
+                        <input type="number" id="sim-current" value="50000">
+                    </div>
+                    <div class="form-group">
+                        <label>Versement mensuel (CHF)</label>
+                        <input type="number" id="sim-monthly" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>Rendement annuel (%)</label>
+                        <input type="number" id="sim-return" value="5" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Durée (années)</label>
+                        <input type="number" id="sim-years" value="20">
+                    </div>
+                    <button class="btn" onclick="runSimulator()">Calculer</button>
+                    <div id="sim-result"></div>
+                </div>
+            `;
+        }
+
+        function runSimulator() {
+            const current = parseFloat(document.getElementById('sim-current').value) || 0;
+            const monthly = parseFloat(document.getElementById('sim-monthly').value) || 0;
+            const annualReturn = parseFloat(document.getElementById('sim-return').value) || 0;
+            const years = parseFloat(document.getElementById('sim-years').value) || 0;
+
+            const r = annualReturn / 100 / 12;
+            const n = years * 12;
+            let fv;
+            if (r === 0) {
+                fv = current + monthly * n;
+            } else {
+                fv = current * Math.pow(1 + r, n) + monthly * (Math.pow(1 + r, n) - 1) / r;
+            }
+
+            document.getElementById('sim-result').innerHTML = `
+                <div class="sim-result">
+                    <div class="card-title">Patrimoine estimé dans ${years} ans</div>
+                    <div class="big-number">${formatCHF(fv)}</div>
+                </div>
+            `;
+        }
+
+        // ===================== MORE =====================
+        function renderMore() {
+            document.getElementById('page-more').innerHTML = `
+                <div class="section-title">Comptes</div>
+                <div class="card" style="padding:8px 18px;">
+                    ${data.accounts.map(a => `
+                        <div class="list-item">
+                            <div class="icon-circle" style="background:rgba(10,132,255,0.15)">🏦</div>
+                            <div class="item-info">
+                                <div class="item-title">${a.name}</div>
+                                <div class="item-sub">${a.institution} · ${a.type}</div>
+                            </div>
+                            <div class="item-amount">${formatCHF(a.balance)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="btn btn-secondary" style="margin-bottom:20px" onclick="openModal('account')">+ Ajouter un compte</button>
+
+                <div class="section-title">Abonnements</div>
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                        <span style="color:var(--text2)">Total mensuel</span>
+                        <span style="font-weight:700;color:var(--purple)">${formatCHF(totalSubscriptionsMonthly())}</span>
+                    </div>
+                    ${data.subscriptions.map(s => `
+                        <div class="list-item">
+                            <div class="item-info">
+                                <div class="item-title">${s.name}</div>
+                                <div class="item-sub">${s.frequency === 'yearly' ? 'Annuel' : 'Mensuel'}</div>
+                            </div>
+                            <div class="item-amount">${formatCHF(s.amount)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="btn btn-secondary" style="margin-bottom:20px" onclick="openModal('subscription')">+ Ajouter un abonnement</button>
+
+                <div class="section-title">Optimisation fiscale Suisse</div>
+                <div class="card">
+                    ${[
+                        "Cotisations 3e pilier A : déductibles jusqu'à 7'258 CHF (salariés) ou 36'288 CHF (indépendants) en 2026.",
+                        "Frais de transport domicile-travail : déductibles (CFF, voiture, etc.).",
+                        "Frais de formation continue et perfectionnement professionnel.",
+                        "Dons à des organisations d'utilité publique (selon canton).",
+                        "Intérêts hypothécaires et frais d'entretien de l'immeuble.",
+                        "Garde d'enfants et frais de garde (selon canton).",
+                        "Vérifie les conventions de double imposition si tu as des comptes à l'étranger."
+                    ].map(tip => `
+                        <div class="tax-tip">
+                            <div style="color:var(--green);font-size:18px">✓</div>
+                            <div style="font-size:14px;line-height:1.4">${tip}</div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="section-title">Données</div>
+                <button class="btn btn-secondary" style="margin-bottom:10px" onclick="exportData()">Exporter les données (JSON)</button>
+                <button class="btn btn-danger" onclick="if(confirm('Tout supprimer ?')){localStorage.removeItem(STORAGE_KEY);location.reload()}">Réinitialiser l'application</button>
+            `;
+        }
+
+        function exportData() {
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'swisswealth-backup.json';
+            a.click();
+        }
+
+        // ===================== MODALS =====================
+        function openModal(type) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+            
+            let html = '';
+            
+            if (type === 'transaction') {
+                html = `
+                    <div class="modal-header">
+                        <h2>Nouvelle transaction</h2>
+                        <button class="close-btn" onclick="closeModal()">×</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Montant (CHF)</label>
+                        <input type="number" id="tx-amount" step="0.05" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <div class="segmented">
+                            <button class="active" id="tx-expense" onclick="setTxType(true)">Dépense</button>
+                            <button id="tx-income" onclick="setTxType(false)">Revenu</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <select id="tx-category">
+                            <option>Alimentation</option>
+                            <option>Transport</option>
+                            <option>Logement</option>
+                            <option>Santé</option>
+                            <option>Loisirs</option>
+                            <option>Shopping</option>
+                            <option>Restaurants</option>
+                            <option>Abonnements</option>
+                            <option>Salaire</option>
+                            <option>Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Marchand / Description</label>
+                        <input type="text" id="tx-merchant" placeholder="Ex: Migros">
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="tx-date" value="${new Date().toISOString().split('T')[0]}">
+                    </div>
+                    <button class="btn" onclick="addTransaction()">Ajouter</button>
+                `;
+                window.txIsExpense = true;
+            }
+            else if (type === 'account') {
+                html = `
+                    <div class="modal-header">
+                        <h2>Nouveau compte</h2>
+                        <button class="close-btn" onclick="closeModal()">×</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom du compte</label>
+                        <input type="text" id="acc-name" placeholder="Ex: Compte UBS">
+                    </div>
+                    <div class="form-group">
+                        <label>Institution</label>
+                        <input type="text" id="acc-institution" placeholder="Ex: UBS">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="acc-type">
+                            <option>Banque</option>
+                            <option>Crypto</option>
+                            <option>Investissement</option>
+                            <option>Pension</option>
+                            <option>Espèces</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Solde initial (CHF)</label>
+                        <input type="number" id="acc-balance" value="0">
+                    </div>
+                    <button class="btn" onclick="addAccount()">Créer</button>
+                `;
+            }
+            else if (type === 'budget') {
+                html = `
+                    <div class="modal-header">
+                        <h2>Nouveau budget</h2>
+                        <button class="close-btn" onclick="closeModal()">×</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <select id="bud-category">
+                            <option>Alimentation</option>
+                            <option>Transport</option>
+                            <option>Loisirs</option>
+                            <option>Shopping</option>
+                            <option>Restaurants</option>
+                            <option>Abonnements</option>
+                            <option>Santé</option>
+                            <option>Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Limite mensuelle (CHF)</label>
+                        <input type="number" id="bud-limit" value="500">
+                    </div>
+                    <button class="btn" onclick="addBudget()">Créer</button>
+                `;
+            }
+            else if (type === 'goal') {
+                html = `
+                    <div class="modal-header">
+                        <h2>Nouvel objectif</h2>
+                        <button class="close-btn" onclick="closeModal()">×</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" id="goal-name" placeholder="Ex: Vacances">
+                    </div>
+                    <div class="form-group">
+                        <label>Montant cible (CHF)</label>
+                        <input type="number" id="goal-target" value="5000">
+                    </div>
+                    <div class="form-group">
+                        <label>Déjà épargné (CHF)</label>
+                        <input type="number" id="goal-current" value="0">
+                    </div>
+                    <button class="btn" onclick="addGoal()">Créer</button>
+                `;
+            }
+            else if (type === 'subscription') {
+                html = `
+                    <div class="modal-header">
+                        <h2>Nouvel abonnement</h2>
+                        <button class="close-btn" onclick="closeModal()">×</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" id="sub-name" placeholder="Ex: Netflix">
+                    </div>
+                    <div class="form-group">
+                        <label>Montant (CHF)</label>
+                        <input type="number" id="sub-amount" step="0.05">
+                    </div>
+                    <div class="form-group">
+                        <label>Fréquence</label>
+                        <select id="sub-freq">
+                            <option value="monthly">Mensuel</option>
+                            <option value="yearly">Annuel</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="addSubscription()">Ajouter</button>
+                `;
+            }
+
+            content.innerHTML = html;
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        function setTxType(isExpense) {
+            window.txIsExpense = isExpense;
+            document.getElementById('tx-expense').classList.toggle('active', isExpense);
+            document.getElementById('tx-income').classList.toggle('active', !isExpense);
+        }
+
+        function addTransaction() {
+            const amount = parseFloat(document.getElementById('tx-amount').value);
+            if (!amount || amount <= 0) return alert('Montant invalide');
+
+            data.transactions.push({
+                id: uid(),
+                amount,
+                category: document.getElementById('tx-category').value,
+                merchant: document.getElementById('tx-merchant').value,
+                isExpense: window.txIsExpense,
+                date: document.getElementById('tx-date').value,
+                note: ''
+            });
+            saveData();
+            closeModal();
+            renderPage(document.querySelector('.page.active').id.replace('page-', ''));
+        }
+
+        function addAccount() {
+            const name = document.getElementById('acc-name').value.trim();
+            if (!name) return alert('Nom requis');
+
+            data.accounts.push({
+                id: uid(),
+                name,
+                institution: document.getElementById('acc-institution').value,
+                type: document.getElementById('acc-type').value,
+                balance: parseFloat(document.getElementById('acc-balance').value) || 0,
+                currency: 'CHF'
+            });
+            saveData();
+            closeModal();
+            renderMore();
+        }
+
+        function addBudget() {
+            data.budgets.push({
+                id: uid(),
+                category: document.getElementById('bud-category').value,
+                limit: parseFloat(document.getElementById('bud-limit').value) || 0,
+                spent: 0
+            });
+            saveData();
+            closeModal();
+            renderPlanning();
+        }
+
+        function addGoal() {
+            const name = document.getElementById('goal-name').value.trim();
+            if (!name) return alert('Nom requis');
+
+            data.goals.push({
+                id: uid(),
+                name,
+                target: parseFloat(document.getElementById('goal-target').value) || 0,
+                current: parseFloat(document.getElementById('goal-current').value) || 0,
+                icon: '🎯'
+            });
+            saveData();
+            closeModal();
+            renderPlanning();
+        }
+
+        function addSubscription() {
+            const name = document.getElementById('sub-name').value.trim();
+            if (!name) return alert('Nom requis');
+
+            data.subscriptions.push({
+                id: uid(),
+                name,
+                amount: parseFloat(document.getElementById('sub-amount').value) || 0,
+                frequency: document.getElementById('sub-freq').value
+            });
+            saveData();
+            closeModal();
+            renderMore();
+        }
+
+        // ===================== INIT =====================
+        loadData();
+        renderDashboard();
+    </script>
+</body>
+</html>
